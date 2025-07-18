@@ -1,0 +1,99 @@
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+  padding-top: 16px;
+}
+
+.table {
+  min-width: fit-content;
+  border-collapse: collapse;
+  table-layout: fixed;
+  min-width: 100%;
+}
+
+.table__head {
+  background-color: #006db6;
+  color: white;
+}
+
+.table__body {
+  overflow: hidden;
+}
+
+.table__row {
+  border-bottom: 1px solid #ccc;
+  transition: background-color ease-in 0.2s;
+  cursor: pointer;
+}
+
+.table__row:hover {
+  background-color: #d6e1e9 !important;
+}
+
+.table__row--head {
+  font-weight: bold;
+  background-color: #006db6;
+}
+
+.table__cell {
+  padding: 10px 14px;
+  text-align: left;
+  color: #000;
+}
+
+.table__cell--head {
+  color: #fff;
+  background-color: #006db6;
+  text-align: center;
+}
+
+.table__row:nth-child(odd) {
+  background-color: #f5f5f5;
+}
+
+.table__row:nth-child(even) {
+  background-color: #fff;
+}
+
+.table__cell--actions {
+  display: flex;
+  gap: 8px;
+  color: #006db6;
+}
+
+.table__cell--action {
+  padding: 0 8px;
+  cursor: pointer;
+}
+
+.table__cell--state-container {
+  display: flex;
+  justify-content: start;
+}
+
+.table__cell--state {
+  padding: 3px 12px;
+  border-radius: 16px;
+  font-weight: 500;
+  text-align: center;
+  text-wrap: nowrap;
+}
+
+.table__cell--green {
+  background-color: #d4edda;
+  color: #064c1a;
+}
+
+.table__cell--yellow {
+  background-color: #fff3cd;
+  color: #875300;
+}
+
+.table__cell--red {
+  background-color: #f8d7da;
+  color: #710c10;
+}
+
+.table__cell--action:hover {
+  text-decoration: underline;
+}

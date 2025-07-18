@@ -1,0 +1,34 @@
+/* 1️⃣ Asegurar que el modelo de caja sea más predecible */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+/* 2️⃣ Eliminar márgenes por defecto del body (y opcionalmente de headings) */
+body, h1, h2, h3, h4, h5, h6, p {
+  margin: 0;
+}
+
+/* 3️⃣ Que las imágenes y medios no desborden sus contenedores */
+img, picture, video, canvas, svg {
+  max-width: 100%;
+  display: block;
+}
+
+/* 4️⃣ Heredar la fuente en los formularios para mayor consistencia */
+input, button, textarea, select {
+  font: inherit;
+}
+
+/* 5️⃣ Asegurar un scroll suave en navegadores modernos */
+html:focus-within {
+  scroll-behavior: smooth;
+}
+
+/* 6️⃣ Opcional: mejorar el rendering de texto */
+body {
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  color: #333;
+  background-color: #fff;
+  font-family: "Outfit", sans-serif;
+}
