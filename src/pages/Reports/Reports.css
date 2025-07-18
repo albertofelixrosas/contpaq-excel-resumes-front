@@ -1,0 +1,47 @@
+.reports__filters {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-top: 16px;
+}
+
+.reports__filter {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.reports__dates {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+.reports__buttons {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  padding-top: 16px;
+}
+
+@media screen and (min-width: 576px) {
+  .reports__dates {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .reports__filters {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media screen and (min-width: 1200px) {
+  .reports__filters {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+  .reports__dates {
+    grid-column: span 2;
+  }
+}

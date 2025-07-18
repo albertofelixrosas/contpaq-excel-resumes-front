@@ -1,0 +1,37 @@
+.not-found {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 24px;
+  color: #333;
+}
+
+.not-found--padding-top {
+  padding-top: 16px;
+}
+
+.not-found__card {
+  text-align: center;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.not-found__title {
+  margin: 0;
+  font-weight: bold;
+  font-size: 32px;
+}
+
+.not-found__title--red {
+  color: #d9534f;
+}
+
+.not-found__description {
+  margin-top: 10px;
+  font-size: 18px;
+  color: #555;
+  font-weight: 500;
+}

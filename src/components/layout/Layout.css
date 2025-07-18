@@ -1,0 +1,70 @@
+.layout {
+  background-color: white;
+  min-height: max-content;
+  height: 100dvh; /* Altura completa de la ventana */
+  max-width: 100dvw; /* Ancho completo de la ventana */
+  overflow-x: hidden; /* Evita el scroll horizontal */
+  display: grid;
+  position: relative;
+  z-index: 2;
+}
+
+.layout__overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100dvw;
+  height: 100dvh;
+  background-color: rgba(0, 0, 0, 0.4); /* semitransparente */
+  z-index: 1; /* debajo del sidebar (que tiene z-index: 2) */
+  transition: opacity 0.3s ease;
+}
+
+/* Menú lateral oculto por defecto */
+.sidebar {
+  width: 350px;
+  background-color: #006db6;
+  color: white;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100dvh;
+  z-index: 2;
+  transform: translateX(-100%);
+  transition: transform 0.3s ease;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.sidebar--active {
+  transform: translateX(0);
+}
+
+/* Contenedor de todo el contenido principal de la pagina */
+.main-content {
+  flex: 1;
+  transition: none;
+  display: grid;
+  grid-template-rows: auto 1fr;
+}
+
+/*SCROLL BAR */
+/* width */
+.sidebar::-webkit-scrollbar {
+  width: 12px;
+}
+
+/* Track */
+.sidebar::-webkit-scrollbar-track {
+  background: #f1f1f1; 
+}
+ 
+/* Handle */
+.sidebar::-webkit-scrollbar-thumb {
+  background: #0087e0; 
+}
+
+/* Handle on hover */
+.sidebar::-webkit-scrollbar-thumb:hover {
+  background: #888; 
+}

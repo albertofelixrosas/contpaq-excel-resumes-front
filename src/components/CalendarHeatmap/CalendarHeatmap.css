@@ -1,0 +1,270 @@
+.heatmap__important-dates {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.heatmap__important-date {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Default: sin datos */
+.color-empty {
+  fill: #eee;
+}
+
+/* Enero - Rojo */
+.color-jan-1 {
+  fill: rgba(255, 0, 0, 0.25);
+}
+.color-jan-2 {
+  fill: rgba(255, 0, 0, 0.5);
+}
+.color-jan-3 {
+  fill: rgba(255, 0, 0, 0.75);
+}
+.color-jan-4 {
+  fill: rgba(255, 0, 0, 1);
+}
+
+/* Febrero - Naranja */
+.color-feb-1 {
+  fill: rgba(255, 165, 0, 0.25);
+}
+.color-feb-2 {
+  fill: rgba(255, 165, 0, 0.5);
+}
+.color-feb-3 {
+  fill: rgba(255, 165, 0, 0.75);
+}
+.color-feb-4 {
+  fill: rgba(255, 165, 0, 1);
+}
+
+/* Marzo - Amarillo */
+.color-mar-1 {
+  fill: rgba(255, 255, 0, 0.25);
+}
+.color-mar-2 {
+  fill: rgba(255, 255, 0, 0.5);
+}
+.color-mar-3 {
+  fill: rgba(255, 255, 0, 0.75);
+}
+.color-mar-4 {
+  fill: rgba(255, 255, 0, 1);
+}
+
+/* Abril - Verde */
+.color-apr-1 {
+  fill: rgba(0, 128, 0, 0.25);
+}
+.color-apr-2 {
+  fill: rgba(0, 128, 0, 0.5);
+}
+.color-apr-3 {
+  fill: rgba(0, 128, 0, 0.75);
+}
+.color-apr-4 {
+  fill: rgba(0, 128, 0, 1);
+}
+
+/* Mayo - Turquesa */
+.color-may-1 {
+  fill: rgba(64, 224, 208, 0.25);
+}
+.color-may-2 {
+  fill: rgba(64, 224, 208, 0.5);
+}
+.color-may-3 {
+  fill: rgba(64, 224, 208, 0.75);
+}
+.color-may-4 {
+  fill: rgba(64, 224, 208, 1);
+}
+
+/* Junio - Azul Claro */
+.color-jun-1 {
+  fill: rgba(135, 206, 235, 0.25);
+}
+.color-jun-2 {
+  fill: rgba(135, 206, 235, 0.5);
+}
+.color-jun-3 {
+  fill: rgba(135, 206, 235, 0.75);
+}
+.color-jun-4 {
+  fill: rgba(135, 206, 235, 1);
+}
+
+/* Julio - Azul */
+.color-jul-1 {
+  fill: rgba(0, 0, 255, 0.25);
+}
+.color-jul-2 {
+  fill: rgba(0, 0, 255, 0.5);
+}
+.color-jul-3 {
+  fill: rgba(0, 0, 255, 0.75);
+}
+.color-jul-4 {
+  fill: rgba(0, 0, 255, 1);
+}
+
+/* Agosto - Violeta Claro */
+.color-aug-1 {
+  fill: rgba(138, 43, 226, 0.25);
+}
+.color-aug-2 {
+  fill: rgba(138, 43, 226, 0.5);
+}
+.color-aug-3 {
+  fill: rgba(138, 43, 226, 0.75);
+}
+.color-aug-4 {
+  fill: rgba(138, 43, 226, 1);
+}
+
+/* Septiembre - Morado */
+.color-sep-1 {
+  fill: rgba(128, 0, 128, 0.25);
+}
+.color-sep-2 {
+  fill: rgba(128, 0, 128, 0.5);
+}
+.color-sep-3 {
+  fill: rgba(128, 0, 128, 0.75);
+}
+.color-sep-4 {
+  fill: rgba(128, 0, 128, 1);
+}
+
+/* Octubre - Fucsia */
+.color-oct-1 {
+  fill: rgba(255, 20, 147, 0.25);
+}
+.color-oct-2 {
+  fill: rgba(255, 20, 147, 0.5);
+}
+.color-oct-3 {
+  fill: rgba(255, 20, 147, 0.75);
+}
+.color-oct-4 {
+  fill: rgba(255, 20, 147, 1);
+}
+
+/* Noviembre - Marrón */
+.color-nov-1 {
+  fill: rgba(139, 69, 19, 0.25);
+}
+.color-nov-2 {
+  fill: rgba(139, 69, 19, 0.5);
+}
+.color-nov-3 {
+  fill: rgba(139, 69, 19, 0.75);
+}
+.color-nov-4 {
+  fill: rgba(139, 69, 19, 1);
+}
+
+/* Diciembre - Gris Oscuro */
+.color-dec-1 {
+  fill: rgba(105, 105, 105, 0.25);
+}
+.color-dec-2 {
+  fill: rgba(105, 105, 105, 0.5);
+}
+.color-dec-3 {
+  fill: rgba(105, 105, 105, 0.75);
+}
+.color-dec-4 {
+  fill: rgba(105, 105, 105, 1);
+}
+
+.heatmap {
+  text-align: center;
+}
+
+.heatmap__header {
+  display: flex;
+  flex-direction: column;
+  padding: 16px 0;
+  gap: 16px;
+}
+
+.heatmap__controls {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.heatmap__ranges {
+  display: flex;
+  justify-content: space-around;
+}
+
+.heatmap__range-item {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.heatmap__button {
+  border-radius: 4px;
+  padding: 0 16px;
+  height: 40px;
+  cursor: pointer;
+  background-color: white;
+  border: 1px solid rgba(0, 0, 0, 0.16);
+  box-shadow: 0px 1px 0px rgba(0, 0, 0, 0.05);
+  transition: background-color 200ms;
+}
+
+/* file upload button hover state */
+.heatmap__button:hover:not(:disabled) {
+  background-color: #f3f4f6;
+}
+
+/* file upload button active state */
+.heatmap__button:active {
+  background-color: #e5e7eb;
+}
+
+.heatmap__button:disabled {
+  cursor: not-allowed;
+}
+
+@media screen and (min-width: 576px) {
+  .heatmap__header {
+    flex-direction: row;
+    justify-content: space-evenly;
+  }
+
+  .heatmap__controls {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+  }
+
+  .heatmap__ranges {
+    display: flex;
+    justify-content: space-between;
+    gap: 32px;
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .heatmap__ranges {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 64px;
+  }
+}
+
+@media screen and (min-width: 992px) {
+}

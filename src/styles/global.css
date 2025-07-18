@@ -1,0 +1,329 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  font-family: 'Outfit', sans-serif;
+}
+
+body {
+  margin: 0;
+  background-color: #0d3c5a;
+  overflow-y: scroll;
+  max-width: 100dvw;
+  min-height: 100dvh;
+}
+
+button {
+  font-family: 'Outfit', sans-serif;
+}
+
+p {
+  margin: 0;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0;
+}
+
+/* react-hot-toast styles */
+.toast-container {
+  background-color: white;
+  border: 1px solid #dfdfdf;
+  color: black;
+  font-weight: 500;
+  border-radius: 8px;
+}
+
+.card {
+  background-color: white;
+  border-radius: 8px;
+  padding: 40px;
+}
+
+.card--rectoria-image {
+  position: relative;
+}
+
+.card--rectoria-image::after {
+  content: '';
+  display: none;
+}
+
+.button {
+  padding: 12px 36px;
+  border-radius: 8px;
+  font-weight: 500;
+  border: none;
+  color: white;
+  font-size: 18px;
+  cursor: pointer;
+  background-color: #006db6;
+  transition: background-color ease-in 0.2s;
+}
+
+.button:disabled {
+  background-color: rgba(0, 109, 182, 0.3);
+  color: white;
+  cursor: not-allowed;
+}
+
+.button:hover:not(:disabled) {
+  background-color: rgba(0, 109, 182, 0.75);
+}
+
+.button--ghost {
+  border: 1px solid #006db6;
+  background-color: transparent;
+  color: #006db6;
+  transition: background-color ease-in 0.2s;
+}
+
+.button--ghost:disabled {
+  background-color: rgba(0, 109, 182, 0.1);
+  color: #006db6;
+}
+
+.button--ghost:hover:not(:disabled) {
+  background-color: rgba(0, 109, 182, 0.15);
+}
+
+.page {
+  padding: 32px;
+  max-width: 100dvw;
+}
+
+.page__title {
+  text-transform: uppercase;
+  font-size: 40px;
+  font-weight: 500;
+}
+
+.page__title--gray {
+  font-size: 40px;
+  color: #4d4d4d;
+  font-weight: 500;
+}
+
+.page__subtitle {
+  color: #868686;
+  font-size: 18px;
+}
+
+.page__separator {
+  margin-block: 24px;
+}
+
+.page__direct-access-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.page__direct-access {
+  padding: 16px;
+  background-color: #e6f1f8;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  font-size: 20px;
+  transition: background-color ease-in 0.2s;
+}
+
+.page__direct-access:hover {
+  background-color: #c0dced;
+}
+
+.page__header-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.page__actions {
+  display: flex;
+  gap: 24px;
+}
+
+.page__action {
+  padding: 10px 36px;
+  font-weight: 500;
+  min-width: max-content;
+}
+
+.meet-card-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 26px;
+  padding-block: 20px;
+}
+
+.meet-card {
+  box-shadow:
+    0 3px 10px rgba(0, 0, 0, 0.1),
+    0 3px 3px rgba(0, 0, 0, 0.05);
+  display: grid;
+  grid-template-rows: auto 1fr;
+}
+
+.meet-card__header {
+  background-color: #006db6;
+  color: white;
+  padding: 12px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
+
+.meet-card__header-title {
+  font-size: 24px;
+}
+
+.meet-card__header-priority {
+  background-color: #338ac5;
+  border-radius: 24px;
+  color: white;
+  padding: 8px 20px;
+  font-size: 16px;
+}
+
+.meet-card__body {
+  background-color: #f5f5f5;
+  padding: 22px;
+  height: auto;
+}
+
+.meet-card__body-datetime {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  padding-bottom: 16px;
+}
+
+.meet-card__body-datetime-icon {
+  width: 35px;
+  height: 35px;
+}
+
+.meet-card__body-description {
+  margin: 0;
+}
+
+.meet-card__body-label {
+  font-weight: 500;
+}
+
+.meet-card__body-buttons {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 20px;
+}
+
+.meet-card__body-participants {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-top: 12px;
+  height: 284px;
+
+  overflow-y: scroll;
+}
+
+.meet-card__body-participant {
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+  border-radius: 8px;
+  padding: 12px;
+  margin-right: 8px;
+  gap: 2px;
+}
+
+.meet-card__body-participant-data-item {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  padding: 1px 8px;
+  border: 1px solid white;
+  border-radius: 4px;
+  cursor: pointer;
+  transition:
+    background-color ease-in 0.2s,
+    border ease-in 0.2s;
+}
+
+.meet-card__body-participant-data-item:hover {
+  border: 1px solid rgba(0, 109, 182, 0.5);
+  background-color: rgba(0, 109, 182, 0.15);
+}
+
+.meet-card__body-button {
+  padding: 12px 16px;
+  border-radius: 8px;
+  border: none;
+  color: white;
+  font-size: 18px;
+  cursor: pointer;
+  background-color: #006db6;
+  transition: background-color ease-in 0.2s;
+}
+
+.meet-card__body-button:hover {
+  background-color: rgba(0, 109, 182, 0.75);
+}
+
+.meet-card__body-button--ghost {
+  border: 1px solid #006db6;
+  background-color: transparent;
+  color: #006db6;
+  transition: background-color ease-in 0.2s;
+}
+
+.meet-card__body-button--ghost:hover {
+  background-color: rgba(0, 109, 182, 0.15);
+}
+
+@media screen and (min-width: 768px) {
+  .meet-card-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .page__header-section {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+@media screen and (min-width: 1200px) {
+  .card--rectoria-image::after {
+    content: '';
+    display: block;
+    background-image: url('/assets/images/card-image.png');
+    background-repeat: no-repeat;
+    background-size: cover;
+    width: 650px;
+    height: 800px;
+    position: absolute;
+    top: 0;
+    right: -500px;
+  }
+
+  .page {
+    padding-inline: 128px;
+  }
+}
+
+@media screen and (min-width: 1600px) {
+  .page {
+    padding-inline: 256px;
+  }
+}
