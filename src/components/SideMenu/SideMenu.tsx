@@ -20,6 +20,14 @@ export default function SideMenu({ isActive }: SideMenuProps) {
         <li
           className="sidebar__section"
           onClick={() => {
+            navigate('/');
+          }}
+        >
+          Inicio
+        </li>
+        <li
+          className="sidebar__section"
+          onClick={() => {
             navigate('/reports');
           }}
         >

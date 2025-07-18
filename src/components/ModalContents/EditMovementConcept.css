@@ -10,3 +10,39 @@
   grid-template-columns: 1fr 1fr;
   gap: 16px;
 }
+
+.update-movement-form__entry {
+
+}
+
+.update-movement-form__text {
+  padding: 16px;
+}
+
+.update-movement-form__list {
+  display: flex;
+  flex-wrap: wrap;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  gap: 8px;
+}
+
+.update-movement-form__list-item {
+  padding: 6px 12px;
+  background-color: #eee;
+  border-radius: 4px;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color ease-in 0.2s, color ease-in 0.2s;
+}
+
+.update-movement-form__list-item--selected {
+  background-color: #006DB6;
+  color: #eee;
+}
+
+.update-movement-form__list-item:hover {
+  background-color: #006DB6;
+  color: #eee;
+}
