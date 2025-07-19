@@ -394,7 +394,7 @@ export const Reports = () => {
               className="form__select"
               name="supplier"
               id="supplier-select"
-              disabled={!selectedCompany}
+              disabled={!selectedCompany || loadingSuppliers}
               value={selectedSupplier}
               onChange={e => {
                 setSelectedSupplier(e.target.value);
