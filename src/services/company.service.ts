@@ -18,5 +18,5 @@ export async function updateCompany(
   id: number,
   payload: Partial<UpdateCompanyDto>,
 ): Promise<void> {
-  await api.put(`/companies/${id}`, payload);
+  await api.patch(`/companies/${id}`, payload);
 }

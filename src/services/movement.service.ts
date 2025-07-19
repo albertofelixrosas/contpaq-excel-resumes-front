@@ -55,5 +55,5 @@ export async function updateMovement(
   id: number,
   payload: Partial<CreateMovementDto>,
 ): Promise<void> {
-  await api.put(`/movements/${id}`, payload);
+  await api.patch(`/movements/${id}`, payload);
 }

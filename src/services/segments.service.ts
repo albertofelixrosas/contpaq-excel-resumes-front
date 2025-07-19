@@ -20,5 +20,5 @@ export async function deleteSegment(id: number): Promise<void> {
 }
 
 export async function updateSegment(id: number, payload: Partial<UpdateSegmentDto>): Promise<void> {
-  await api.put(`/segments/${id}`, payload);
+  await api.patch(`/segments/${id}`, payload);
 }
