@@ -20,6 +20,7 @@ import type {
 import { useMovementsSuppliers } from '../../hooks/useMovementsSuppliers';
 
 export const Reports = () => {
+  const { today, lastMonth } = getTodayAndLastMonth();
   const [selectedMovement, setSelectedMovement] = useState<MovementReportDto | null>(null);
   const [selectedCompany, setSelectedCompany] = useState<Company | null>(null);
   const [selectedAccount, setSelectedAccount] = useState<AccountingAccount | null>(null);
@@ -28,9 +29,8 @@ export const Reports = () => {
   const [movementsFilters, setMovementsFilters] = useState<MovementFilterDto>({
     page: 1,
     limit: 20,
-    start_date: '',
-    end_date: '',
-    company_id: 0,
+    start_date: lastMonth,
+    end_date: today,
   });
   const [showEditConcept, setShowEditConcept] = useState(false);
   const [newConcept, setNewConcept] = useState('');
@@ -108,6 +108,10 @@ export const Reports = () => {
       setSegmentsFilter({});
       setAccountsFilter({});
       setSuppliersFilter({ company_id: 0 });
+      setSelectedAccount(null);
+      setSelectedSegment(null);
+      setSelectedConcept('');
+      setSelectedSupplier('');
     } else {
       setSegmentsFilter({ company_id: selectedCompany.company_id });
       setAccountsFilter({ company_id: selectedCompany.company_id });
@@ -182,13 +186,33 @@ export const Reports = () => {
     fetchMovements(movementsFilters);
   };
 
-  const handleOnEditConcept = () => {
-    updateMovement(selectedMovement?.movement_id || 0, {
-      concept: newConcept,
-    });
-    setShowEditConcept(false);
-    toast.success('¡Se ha actualizado el concepto con exito!');
+  const handleOnEditConcept = async () => {
+    try {
+      await updateMovement(selectedMovement?.movement_id || 0, {
+        concept: newConcept,
+      });
+      setNewConcept('');
+      setShowEditConcept(false);
+      fetchMovements(movementsFilters);
+      toast.success('¡Se ha actualizado el concepto con exito!');
+    } catch (error) {
+      toast.error(movementError);
+    }
   };
+
+  function getTodayAndLastMonth(): { today: string; lastMonth: string } {
+    const todayDate = new Date();
+
+    const formatDate = (date: Date): string => date.toJSON().slice(0, 10); // YYYY-MM-DD
+
+    const lastMonthDate = new Date(todayDate);
+    lastMonthDate.setMonth(todayDate.getMonth() - 1);
+
+    return {
+      today: formatDate(todayDate),
+      lastMonth: formatDate(lastMonthDate),
+    };
+  }
 
   const movementsFiltersAreValid = (): boolean => {
     const { start_date, end_date } = movementsFilters;

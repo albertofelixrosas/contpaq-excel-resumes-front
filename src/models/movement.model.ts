@@ -41,7 +41,7 @@ export interface MovementReportDto {
 }
 
 export interface MovementFilterDto {
-  company_id: number;
+  company_id?: number;
   accounting_account_id?: number;
   segment_id?: number;
   start_date: string;
