@@ -19,6 +19,9 @@ export function useMovements(initialFilters: MovementFilterDto) {
 
   const fetch = useCallback(
     async (filters = initialFilters) => {
+      if (!filters.company_id) {
+        return;
+      }
       setLoading(true);
       try {
         const res = await fetchMovements(filters);
@@ -38,7 +41,6 @@ export function useMovements(initialFilters: MovementFilterDto) {
       setLoading(true);
       try {
         await createMovement(payload);
-        await fetch();
       } catch (err) {
         setError(err instanceof Error ? err.message : String(err));
       } finally {
@@ -52,7 +54,6 @@ export function useMovements(initialFilters: MovementFilterDto) {
     setLoading(true);
     try {
       await updateMovement(id, payload);
-      await fetch();
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err));
     } finally {
@@ -65,7 +66,6 @@ export function useMovements(initialFilters: MovementFilterDto) {
       setLoading(true);
       try {
         await deleteMovement(id);
-        await fetch();
       } catch (err) {
         setError(err instanceof Error ? err.message : String(err));
       } finally {

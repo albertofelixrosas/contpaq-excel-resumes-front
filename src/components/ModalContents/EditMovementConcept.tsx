@@ -23,37 +23,46 @@ export const EditMovementConcept = (props: EditMovementConceptProps) => {
   return (
     <form className="update-movement-form" onSubmit={handleOnSubmit} noValidate>
       <div className="update-movement-form__entry">
-        <label className="form__label" htmlFor="">
+        <label className="form__label" htmlFor="date">
           Fecha
         </label>
-        <textarea className="form__text-area" name="" id="" disabled>
-          {formatDateToLongSpanish(new Date(date))}
-        </textarea>
+        <textarea
+          className="form__text-area"
+          name="date"
+          id="date"
+          disabled
+          value={formatDateToLongSpanish(new Date(date))}
+        />
       </div>
       <div className="update-movement-form__entry">
-        <label className="form__label" htmlFor="">
+        <label className="form__label" htmlFor="supplier">
           Proveedor
         </label>
-        <textarea className="form__text-area" name="" id="" disabled>
-          {supplier}
-        </textarea>
+        <textarea
+          className="form__text-area"
+          name="supplier"
+          id="supplier"
+          disabled
+          value={supplier}
+        />
       </div>
       <div className="update-movement-form__entry">
-        <label className="form__label" htmlFor="">
+        <label className="form__label" htmlFor="concept">
           Concepto anterior
         </label>
-        <textarea className="form__text-area" name="" id="" disabled>
-          {previusConcept}
-        </textarea>
+        <textarea
+          className="form__text-area"
+          name="concept"
+          id="concept"
+          disabled
+          value={previusConcept}
+        />
       </div>
       <div className="update-movement-form__entry">
-        <label className="form__label" htmlFor="">
+        <label className="form__label" htmlFor="new-concept">
           Concepto nuevo
         </label>
-        <p className="update-movement-form__text">
-          Seleccione cualquiera de las etiquetas y cambiara el concepto de forma automatica.
-        </p>
-        <ul className="update-movement-form__list">
+        <ul className="update-movement-form__list" id="new-concept">
           {DEFAULT_CONCEPTS.map(c => {
             return (
               <li
@@ -61,6 +70,7 @@ export const EditMovementConcept = (props: EditMovementConceptProps) => {
                   setNewConcept(c);
                 }}
                 className={`update-movement-form__list-item ${newConcept === c ? 'update-movement-form__list-item--selected' : ''} `}
+                key={`moda-concept-${c}`}
               >
                 {c}
               </li>
