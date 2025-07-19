@@ -25,5 +25,5 @@ export async function updateAccounts(
   id: number,
   payload: Partial<UpdateAccountingAccountDto>,
 ): Promise<void> {
-  await api.put(`/accounting-accounts/${id}`, payload);
+  await api.patch(`/accounting-accounts/${id}`, payload);
 }
