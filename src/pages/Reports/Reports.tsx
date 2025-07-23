@@ -65,21 +65,21 @@ export const Reports = () => {
     fetch: fetchAccounts,
     data: accounts,
     error: accountsError,
-  } = useAccountingAccounts(accountsFilter);
+  } = useAccountingAccounts();
 
   const {
     loading: loadingSegments,
     fetch: fetchSegments,
     error: segmentsError,
     data: segments,
-  } = useSegments(segmentsFilter);
+  } = useSegments();
 
   const {
     data: suppliers,
     error: suppliersError,
     loading: loadingSuppliers,
     fetch: fetchSuppliers,
-  } = useMovementsSuppliers(suppliersFilter);
+  } = useMovementsSuppliers();
 
   useEffect(() => {
     fetchCompanies();
@@ -133,7 +133,7 @@ export const Reports = () => {
 
   useEffect(() => {
     if (suppliersFilter.company_id) {
-      fetchSuppliers(suppliersFilter);
+      fetchSuppliers(suppliersFilter.company_id);
     }
   }, [suppliersFilter]);
 

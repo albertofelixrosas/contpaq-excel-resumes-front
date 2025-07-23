@@ -56,7 +56,25 @@ export interface MovementHeatmapFilters {
   company_id: number;
 }
 
+export interface MovementConceptsFilters {
+  company_id?: number;
+}
+
 export interface MovementHeatmapDto {
   date: string;
   count: number;
+}
+
+export interface MasiveChangeConceptDto {
+  company_id: number;
+  accounting_account_id?: number;
+  segment_id?: number;
+  concept?: string;
+  supplier?: string; 
+  new_concept: string;
+}
+
+export interface MasiveChangeConceptResponseDto {
+  affected: number;
+  message: string;
 }
