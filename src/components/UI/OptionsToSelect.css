@@ -1,0 +1,43 @@
+.options-to-select__list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.options-to-select__list-item {
+  padding: 8px 14px;
+  background-color: #f0f0f0; /* gris claro */
+  border-radius: 4px;
+  cursor: pointer;
+  user-select: none;
+  font-size: 14px;
+  border: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition:
+    background-color 0.2s ease-in-out,
+    color 0.2s ease-in-out;
+  color: #333;
+}
+
+.options-to-select__list-item:hover {
+  background-color: #e0e0e0;
+}
+
+.options-to-select__list-item--selected {
+  background-color: #b3e5fc; /* celeste */
+  color: #01579b;
+}
+
+.options-to-select__list-item--new {
+  background-color: #006db6; /* azul fuerte */
+  color: #fff;
+}
+
+.options-to-select__list-item--new:hover {
+  background-color: #005aa3;
+}

@@ -1,0 +1,7 @@
+.concepts__new-concept-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-block: 16px;
+}
+

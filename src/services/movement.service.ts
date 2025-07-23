@@ -4,6 +4,8 @@ import type {
   CreateMovementDto,
   MovementHeatmapDto,
   MovementFilterDto,
+  MasiveChangeConceptDto,
+  MasiveChangeConceptResponseDto,
 } from '../models/movement.model';
 
 /**
@@ -27,10 +29,16 @@ export async function fetchMovementsHeatmap(filters: {
 /**
  * Obtiene un listado de los proveedores que tiene una empresa
  */
-export async function fetchMovementsSuppliers(filters: {
-  company_id: number;
-}): Promise<string[]> {
+export async function fetchMovementsSuppliers(filters: { company_id: number }): Promise<string[]> {
   const { data } = await api.get<string[]>('/movements/suppliers', { params: filters });
+  return data;
+}
+
+/**
+ * Obtiene un listado de los proveedores que tiene una empresa
+ */
+export async function fetchMovementsConcepts(filters: { company_id: number }): Promise<string[]> {
+  const { data } = await api.get<string[]>('/movements/concepts', { params: filters });
   return data;
 }
 
@@ -56,4 +64,17 @@ export async function updateMovement(
   payload: Partial<CreateMovementDto>,
 ): Promise<void> {
   await api.patch(`/movements/${id}`, payload);
+}
+
+/**
+ * Actualiza todos los movimientos que cumplan los filtros dados como parametro en esta función
+ */
+export async function masiveUpdateMovements(
+  payload: MasiveChangeConceptDto,
+): Promise<MasiveChangeConceptResponseDto> {
+  const { data } = await api.patch<MasiveChangeConceptResponseDto>(
+    `/movements/massive-change-concept/`,
+    payload,
+  );
+  return data;
 }

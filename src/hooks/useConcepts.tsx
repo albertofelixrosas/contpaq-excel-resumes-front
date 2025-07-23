@@ -12,7 +12,7 @@ import type {
   UpdateConceptDto,
 } from '../models/concept.model';
 
-export function useConcepts(filters: GetConceptsQueryDto) {
+export function useConcepts() {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<Concept[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -20,6 +20,9 @@ export function useConcepts(filters: GetConceptsQueryDto) {
   const fetch = useCallback(async (filters: GetConceptsQueryDto) => {
     setLoading(true);
     try {
+      if (!filters.company_id) {
+        return;
+      }
       const res = await fetchConcepts(filters);
       setData(res);
       setError(null);
@@ -32,25 +35,22 @@ export function useConcepts(filters: GetConceptsQueryDto) {
 
   const create = useCallback(
     async (payload: CreateConceptDto) => {
-      setLoading(true);
       try {
-        const response = await createConcept(payload);
-        console.log({ response });
-        await fetch(filters);
+        setLoading(true);
+        await createConcept(payload);
       } catch (err) {
         setError(err instanceof Error ? err.message : String(err));
       } finally {
         setLoading(false);
       }
     },
-    [fetch],
+    [],
   );
 
   const update = useCallback(async (id: number, payload: UpdateConceptDto) => {
     setLoading(true);
     try {
       await updateConcept(id, payload);
-      await fetch(filters);
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err));
     } finally {
@@ -60,17 +60,16 @@ export function useConcepts(filters: GetConceptsQueryDto) {
 
   const remove = useCallback(
     async (id: number) => {
-      setLoading(true);
       try {
+        setLoading(true);
         await deleteConcept(id);
-        await fetch(filters);
       } catch (err) {
         setError(err instanceof Error ? err.message : String(err));
       } finally {
         setLoading(false);
       }
     },
-    [fetch],
+    [],
   );
 
   return { data, loading, error, fetch, create, update, remove };

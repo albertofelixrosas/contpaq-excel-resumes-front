@@ -12,7 +12,7 @@ export default function SideMenu({ isActive }: SideMenuProps) {
     <aside className={`sidebar ${isActive ? 'sidebar--active' : ''}`}>
       <div className="sidebar__logo-container">
         {/*
-          <img className="sidebar__logo" src={logo} alt="ITSON logo" />
+          <img className="sidebar__logo" src={logo} alt="Texto alternativo" />
           */}
       </div>
       <div className="sidebar__title">Sistema de registro de movimientos contables</div>
@@ -36,34 +36,18 @@ export default function SideMenu({ isActive }: SideMenuProps) {
         <li
           className="sidebar__section"
           onClick={() => {
-            navigate('/users');
+            navigate('/masive-change');
           }}
         >
-          Empresas
+          Cambios masivos
         </li>
         <li
           className="sidebar__section"
           onClick={() => {
-            navigate('/advisories');
+            navigate('/concepts');
           }}
         >
-          Cuentas contables
-        </li>
-        <li
-          className="sidebar__section"
-          onClick={() => {
-            navigate('/venues');
-          }}
-        >
-          Segmentos
-        </li>
-        <li
-          className="sidebar__section"
-          onClick={() => {
-            navigate('/subjects');
-          }}
-        >
-          Movimientos
+          Conceptos
         </li>
       </ul>
     </aside>
