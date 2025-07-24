@@ -28,6 +28,14 @@ export default function SideMenu({ isActive }: SideMenuProps) {
         <li
           className="sidebar__section"
           onClick={() => {
+            navigate('/data-verification');
+          }}
+        >
+          Verificación de datos
+        </li>
+        <li
+          className="sidebar__section"
+          onClick={() => {
             navigate('/reports');
           }}
         >
