@@ -14,7 +14,7 @@ export const CreateConcept = (props: CreateConceptProps) => {
   const [newConcept, setNewConcept] = useState('');
   const [alreadyExist, setAlreadyExist] = useState(true);
 
-  const { loading, error, fetch, data: currentConcepts, create } = useConcepts({ company_id });
+  const { loading, error, fetch, data: currentConcepts, create } = useConcepts();
 
   useEffect(() => {
     fetch({ company_id });
@@ -27,20 +27,17 @@ export const CreateConcept = (props: CreateConceptProps) => {
   }, [error]);
 
   useEffect(() => {
-    console.log({ currentConcepts });
     const someConceptIsEqualsToNewConcept =
       currentConcepts
         .map(c => c.name.toLowerCase().trim())
         .filter(c => c === newConcept.toLowerCase().trim()).length > 0;
-    console.log({ someConceptIsEqualsToNewConcept });
     setAlreadyExist(someConceptIsEqualsToNewConcept);
   }, [newConcept]);
 
   const handleOnSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      const response = await create({ name: newConcept, company_id });
-      console.log({ response });
+      await create({ name: newConcept, company_id });
       onCreate(`¡Se ha agregado el nuevo concepto "${newConcept}" con exito!`);
     } catch (error) {
       console.error(error);
