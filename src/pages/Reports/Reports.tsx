@@ -19,6 +19,7 @@ export const Reports = () => {
   const [reportFilters, setReportFilters] = useState<ReportFiltersDto>({
     year: getCurrentYear(),
   });
+  const [showEmtpyComponent, setShowEmptyComponent] = useState(false);
 
   const {
     loading: loadingCompanies,
@@ -40,10 +41,6 @@ export const Reports = () => {
     error: reportErrorBySegments,
     fetch: fetchReportBySegments,
   } = useMovementsYearConceptsResumeBySegments();
-
-  useEffect(() => {
-    console.log({ reportData });
-  }, [reportData]);
 
   useEffect(() => {
     if (companiesError) {
@@ -68,24 +65,20 @@ export const Reports = () => {
 
   const onSubmitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    fetchReport(reportFilters);
-    fetchReportBySegments(reportFilters);
-  };
-
-  // Función para saber si hay datos para mostrar en ambos reportes
-  const hasDataToShow = () => {
-    return reportData && reportData.data.length > 1;
+    Promise.all([fetchReport(reportFilters), fetchReportBySegments(reportFilters)]).then(() => {
+      setShowEmptyComponent(true);
+    });
   };
 
   return (
     <section className="page">
-      <header className="page__header">
+      <header className="page__header app--hidden-in-print">
         <h2 className="page__title">Reportes</h2>
         <p className="page__subtitle">Decida los reportes que necesite de sus datos de CONTPAQi</p>
       </header>
 
-      <hr className="page__separator" />
-      <div className="reports__form-container">
+      <hr className="page__separator app--hidden-in-print" />
+      <div className="reports__form-container app--hidden-in-print">
         <form className="reports__form" noValidate onSubmit={onSubmitHandler}>
           <div className="reports__form-inputs">
             <div className="reports__form-filter">
@@ -108,6 +101,7 @@ export const Reports = () => {
                     setReportFilters({
                       ...rest,
                     });
+                    setShowEmptyComponent(false);
                   } else {
                     setSelectedCompany(company);
                     const { company_id, ...rest } = reportFilters;
@@ -149,14 +143,32 @@ export const Reports = () => {
             </div>
           </div>
           <div className="reports__form-buttons">
-            <button className="button" type="submit" disabled={!areValidValuesForFilters()}>
+            <button
+              className="button app--hidden-in-print"
+              type="submit"
+              disabled={!areValidValuesForFilters()}
+            >
               Generar reporte
+            </button>
+            <button
+              className="button button--ghost app--hidden-in-print"
+              type="button"
+              onClick={() => window.print()}
+            >
+              Imprimir
             </button>
           </div>
         </form>
       </div>
 
-      {!hasDataToShow() && (
+      {selectedCompany && reportData && (
+        <div className="reports__loading app--print-only">
+          <h2 className="page__title">{selectedCompany.company_name}</h2>
+          <p className="page__subtitle">Reporte de gastos generales del año {reportFilters.year}</p>
+        </div>
+      )}
+
+      {reportData && reportData.data.length === 1 && selectedCompany && showEmtpyComponent && (
         <div
           style={{
             paddingTop: '16px',
