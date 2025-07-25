@@ -1,0 +1,29 @@
+.app--print-only {
+  display: none;
+}
+
+@media print {
+  /* For WebKit browsers (Chrome, Safari): */
+  ::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* For Firefox: */
+  html {
+    scrollbar-width: none;
+  }
+
+  /* For IE/Edge: */
+  body {
+    -ms-overflow-style: none;
+  }
+
+  .app--hidden-in-print {
+    display: none;
+  }
+
+  .app--print-only {
+    display: block;
+  }
+
+}

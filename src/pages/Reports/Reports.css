@@ -24,6 +24,7 @@
 .reports__form-buttons {
   display: flex;
   justify-content: center;
+  gap: 16px;
 }
 
 .reports__resumes {

@@ -38,6 +38,7 @@
 .table__cell {
   padding: 10px 14px;
   text-align: left;
+  font-size: 12px;
 }
 
 .table__cell--head {

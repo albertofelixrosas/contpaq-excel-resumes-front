@@ -5,6 +5,7 @@ import { HomePage } from './pages/HomePage/HomePage';
 import { Reports } from './pages/Reports/Reports';
 import { DataVerification } from './pages/DataVerification/DataVerification';
 import { MasiveChangePage } from './pages/MasiveChangePage/MasiveChangePage';
+import './App.css';
 
 function App() {
   return (
