@@ -1,7 +1,25 @@
-.concepts__new-concept-container {
+.masive-change__new-concept-container {
   display: flex;
   flex-direction: column;
   gap: 16px;
   padding-block: 16px;
 }
 
+.masive-change__filters {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+}
+
+@media screen and (min-width: 768px) {
+  .masive-change__filters {
+    grid-template-columns: repeat(2, 1fr);
+  } 
+}
+
+@media screen and (min-width: 1024px) {
+  .masive-change__filters {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+}

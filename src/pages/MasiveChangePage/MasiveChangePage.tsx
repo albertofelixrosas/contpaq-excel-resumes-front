@@ -19,6 +19,8 @@ import { useConcepts } from '../../hooks/useConcepts';
 import type { Concept } from '../../models/concept.model';
 import { useMovementsConcetps } from '../../hooks/useMovementsConcepts';
 import { useMasiveMovementsChange } from '../../hooks/useMasiveMovementsChange';
+import '../Reports/Reports.css';
+import './MasiveChangePage.css';
 
 type OptionalCompanyId = {
   company_id?: number;
@@ -281,8 +283,8 @@ export const MasiveChangePage = () => {
         serán sustituidos por parejo.
       </p>
 
-      <div>
-        <div className="reports__filters">
+      <div className="reports__filters-container">
+        <div className="masive-change__filters">
           <div className="reports__filter">
             <label htmlFor="companies-select" className="form__label">
               Empresa <strong>*</strong>
@@ -415,7 +417,7 @@ export const MasiveChangePage = () => {
           </div>
         </div>
         <form noValidate onSubmit={handleOnSubmit}>
-          <div className="concepts__new-concept-container">
+          <div className="masive-change__new-concept-container">
             <div className="reports__filter">
               <label className="form__label" htmlFor="">
                 Nuevo concepto

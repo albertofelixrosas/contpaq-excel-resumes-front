@@ -1,8 +1,5 @@
 import './Header.css';
-
-import { IoIosNotifications } from 'react-icons/io';
 import { MdMenu } from 'react-icons/md';
-// import { useAuth } from '../../context/AuthContext';
 
 interface HeaderProps {
   onMenuClick: (active: boolean) => void;
@@ -25,11 +22,8 @@ export default function Header({ onMenuClick, active }: HeaderProps) {
       <div
         className="main-header__profile-container header__button"
       >
-        {
-          /* <IoIosNotifications color="#FFFFFF" size={20} /> */
-        }
-        <div className="main-header__profile-name">Pablo Cuevas</div>
-        <div className="main-header__profile-name-circle">P</div>
+        <div className="main-header__profile-name">Alberto Félix Rosas</div>
+        <div className="main-header__profile-name-circle">A</div>
       </div>
     </header>
   );

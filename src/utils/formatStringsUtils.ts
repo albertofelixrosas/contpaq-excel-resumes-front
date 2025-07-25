@@ -27,3 +27,15 @@ export function capitalizeEachWord(input: string) {
   // Join the capitalized words back into a single string
   return capitalizedWords.join(' ');
 }
+
+export const formatNumberToMoney = (amount: number) => {
+  const formatter = new Intl.NumberFormat('es-MX', {
+    style: 'currency',
+    currency: 'MXN',
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+
+  const formattedAmount = formatter.format(amount);
+  return formattedAmount;
+};

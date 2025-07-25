@@ -6,6 +6,8 @@ import type {
   MovementFilterDto,
   MasiveChangeConceptDto,
   MasiveChangeConceptResponseDto,
+  MonthlyReportDto,
+  MonthlyReportBySegmentsDto,
 } from '../models/movement.model';
 
 /**
@@ -39,6 +41,26 @@ export async function fetchMovementsSuppliers(filters: { company_id: number }): 
  */
 export async function fetchMovementsConcepts(filters: { company_id: number }): Promise<string[]> {
   const { data } = await api.get<string[]>('/movements/concepts', { params: filters });
+  return data;
+}
+
+export async function fetchMovementsYearConceptsResume(filters: {
+  company_id: number;
+  year: number;
+}): Promise<MonthlyReportDto> {
+  const { data } = await api.get<MonthlyReportDto>('/movements/monthly-report', {
+    params: filters,
+  });
+  return data;
+}
+
+export async function fetchMovementsYearConceptsResumeBySegments(filters: {
+  company_id: number;
+  year: number;
+}): Promise<MonthlyReportBySegmentsDto[]> {
+  const { data } = await api.get<MonthlyReportBySegmentsDto[]>('/movements/segmented-monthly-report', {
+    params: filters,
+  });
   return data;
 }
 

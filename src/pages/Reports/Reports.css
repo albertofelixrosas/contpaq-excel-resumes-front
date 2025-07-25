@@ -1,0 +1,51 @@
+.reports__form-filter {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.reports__form-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.reports__form {
+  width: 100%;
+  display: grid;
+  gap: 16px;
+}
+
+.reports__form-inputs {
+  display: grid;
+  gap: 16px;
+}
+
+.reports__form-buttons {
+  display: flex;
+  justify-content: center;
+}
+
+.reports__resumes {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+@media screen and (min-width: 576px) {
+  .reports__form-inputs {
+    grid-template-columns: 3fr 1fr;
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .reports__form {
+    width: 75%;
+  }
+}
+
+@media screen and (min-width: 992px) {
+  .reports__form {
+    width: 50%;
+  }
+}
