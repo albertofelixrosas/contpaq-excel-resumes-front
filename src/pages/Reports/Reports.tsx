@@ -1,4 +1,82 @@
+import { useEffect, useState } from 'react';
+import { formatNumberToMoney } from '../../utils/formatStringsUtils';
+import './Reports.css';
+import { useCompanies } from '../../hooks/useCompanies';
+import type { Company } from '../../models/company.model';
+import toast from 'react-hot-toast';
+import { useMovementYearResume } from '../../hooks/useMovementYearResume';
+import { useMovementsYearConceptsResumeBySegments } from '../../hooks/useMovementYearResumeBySegments';
+
+interface ReportFiltersDto {
+  company_id?: number;
+  year: number;
+}
+
+const getCurrentYear = () => new Date().getFullYear();
+
 export const Reports = () => {
+  const [selectedCompany, setSelectedCompany] = useState<Company | null>(null);
+  const [reportFilters, setReportFilters] = useState<ReportFiltersDto>({
+    year: getCurrentYear(),
+  });
+
+  const {
+    loading: loadingCompanies,
+    data: companies,
+    fetch: fetchCompanies,
+    error: companiesError,
+  } = useCompanies();
+
+  const {
+    data: reportData,
+    error: reportError,
+    loading: loadingReport,
+    fetch: fetchReport,
+  } = useMovementYearResume();
+
+  const {
+    loading: loadingReportBySegments,
+    data: reportDataBySegments,
+    error: reportErrorBySegments,
+    fetch: fetchReportBySegments,
+  } = useMovementsYearConceptsResumeBySegments();
+
+  useEffect(() => {
+    console.log({ reportData });
+  }, [reportData]);
+
+  useEffect(() => {
+    if (companiesError) {
+      toast.error(companiesError);
+    }
+    if (reportError) {
+      toast.error(reportError);
+    }
+    if (reportErrorBySegments) {
+      toast.error(reportErrorBySegments);
+    }
+  }, [companiesError, reportError, reportErrorBySegments]);
+
+  useEffect(() => {
+    fetchCompanies();
+  }, []);
+
+  const areValidValuesForFilters = (): boolean => {
+    const { company_id, year } = reportFilters;
+    return !!company_id && !!year;
+  };
+
+  const onSubmitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    fetchReport(reportFilters);
+    fetchReportBySegments(reportFilters);
+  };
+
+  // Función para saber si hay datos para mostrar en ambos reportes
+  const hasDataToShow = () => {
+    return reportData && reportData.data.length > 1;
+  };
+
   return (
     <section className="page">
       <header className="page__header">
@@ -7,6 +85,373 @@ export const Reports = () => {
       </header>
 
       <hr className="page__separator" />
+      <div className="reports__form-container">
+        <form className="reports__form" noValidate onSubmit={onSubmitHandler}>
+          <div className="reports__form-inputs">
+            <div className="reports__form-filter">
+              <label className="form__label" htmlFor="company">
+                Empresa
+              </label>
+              <select
+                className="form__select"
+                name="company"
+                id="company"
+                disabled={loadingCompanies}
+                value={!selectedCompany ? '' : `${selectedCompany.company_id}`}
+                onChange={e => {
+                  const company = companies.filter(
+                    c => c.company_id === parseInt(e.target.value),
+                  )[0];
+                  if (!company) {
+                    setSelectedCompany(null);
+                    const { company_id, ...rest } = reportFilters;
+                    setReportFilters({
+                      ...rest,
+                    });
+                  } else {
+                    setSelectedCompany(company);
+                    const { company_id, ...rest } = reportFilters;
+                    setReportFilters({
+                      ...rest,
+                      company_id: company.company_id,
+                    });
+                  }
+                }}
+              >
+                <option value="">(Empresa sin especificar)</option>
+                {companies.map(c => (
+                  <option key={`company_${c.company_id}`} value={String(c.company_id)}>
+                    {c.company_name}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="reports__form-filter">
+              <label className="form__label" htmlFor="year">
+                Año
+              </label>
+              <input
+                className="form__input"
+                type="number"
+                name="year"
+                id="year"
+                min={1970}
+                max={getCurrentYear()}
+                value={reportFilters.year}
+                onChange={e => {
+                  const { year, ...rest } = reportFilters;
+                  setReportFilters({
+                    ...rest,
+                    year: parseInt(e.target.value),
+                  });
+                }}
+              />
+            </div>
+          </div>
+          <div className="reports__form-buttons">
+            <button className="button" type="submit" disabled={!areValidValuesForFilters()}>
+              Generar reporte
+            </button>
+          </div>
+        </form>
+      </div>
+
+      {!hasDataToShow() && (
+        <div
+          style={{
+            paddingTop: '16px',
+          }}
+          className="not-found"
+        >
+          <div className="not-found__card">
+            <p className="not-found__title">No hay datos registrados</p>
+            <p className="not-found__description">
+              Para la empresa "{selectedCompany?.company_name}" no hay datos el año{' '}
+              {reportFilters.year}.
+            </p>
+          </div>
+        </div>
+      )}
+
+      {reportData && !loadingReport && (
+        <div className="reports__resumes">
+          {reportData.data.length > 1 && (
+            <div className="table-container">
+              <h2 style={{ paddingBottom: '8px' }}>Reporte de gastos generales</h2>
+              <table className="table">
+                <thead className="table__head">
+                  <tr className="table__row--head">
+                    <th className="">Concepto</th>
+                    {reportData.months.map(m => {
+                      return (
+                        <th key={m.key} className="table__cell table__cell--head">
+                          {m.label}
+                        </th>
+                      );
+                    })}
+                    <th>Total General</th>
+                  </tr>
+                </thead>
+                <tbody className="table__body">
+                  {reportData.data
+                    .filter((_, index) => index < reportData.data.length - 1)
+                    .map((row, index) => {
+                      return (
+                        <tr className="table__row" key={`report-resume-header-row-${index}`}>
+                          <td style={{ textWrap: 'nowrap' }} className="table__cell">
+                            {row.concept}
+                          </td>
+                          <td className="table__cell">
+                            {row.ene === 0 ? '' : formatNumberToMoney(row.ene)}
+                          </td>
+                          <td className="table__cell">
+                            {row.feb === 0 ? '' : formatNumberToMoney(row.feb)}
+                          </td>
+                          <td className="table__cell">
+                            {row.mar === 0 ? '' : formatNumberToMoney(row.mar)}
+                          </td>
+                          <td className="table__cell">
+                            {row.abr === 0 ? '' : formatNumberToMoney(row.abr)}
+                          </td>
+                          <td className="table__cell">
+                            {row.may === 0 ? '' : formatNumberToMoney(row.may)}
+                          </td>
+                          <td className="table__cell">
+                            {row.jun === 0 ? '' : formatNumberToMoney(row.jun)}
+                          </td>
+                          <td className="table__cell">
+                            {row.jul === 0 ? '' : formatNumberToMoney(row.jul)}
+                          </td>
+                          <td className="table__cell">
+                            {row.ago === 0 ? '' : formatNumberToMoney(row.ago)}
+                          </td>
+                          <td className="table__cell">
+                            {row.sep === 0 ? '' : formatNumberToMoney(row.sep)}
+                          </td>
+                          <td className="table__cell">
+                            {row.oct === 0 ? '' : formatNumberToMoney(row.oct)}
+                          </td>
+                          <td className="table__cell">
+                            {row.nov === 0 ? '' : formatNumberToMoney(row.nov)}
+                          </td>
+                          <td className="table__cell">
+                            {row.dic === 0 ? '' : formatNumberToMoney(row.dic)}
+                          </td>
+                          <td className="table__cell">
+                            {row.total_general === 0 ? '' : formatNumberToMoney(row.total_general)}
+                          </td>
+                        </tr>
+                      );
+                    })}
+                </tbody>
+                <tfoot>
+                  {reportData.data
+                    .filter((_, index) => index === reportData.data.length - 1)
+                    .map((row, index) => {
+                      return (
+                        <tr
+                          style={{
+                            backgroundColor: '#006db6',
+                            color: 'white',
+                          }}
+                          key={`report-resume-row-${index}`}
+                        >
+                          <td className="table__cell" style={{ textWrap: 'nowrap' }}>
+                            {row.concept}
+                          </td>
+                          <td className="table__cell">
+                            {row.ene === 0 ? '' : formatNumberToMoney(row.ene)}
+                          </td>
+                          <td className="table__cell">
+                            {row.feb === 0 ? '' : formatNumberToMoney(row.feb)}
+                          </td>
+                          <td className="table__cell">
+                            {row.mar === 0 ? '' : formatNumberToMoney(row.mar)}
+                          </td>
+                          <td className="table__cell">
+                            {row.abr === 0 ? '' : formatNumberToMoney(row.abr)}
+                          </td>
+                          <td className="table__cell">
+                            {row.may === 0 ? '' : formatNumberToMoney(row.may)}
+                          </td>
+                          <td className="table__cell">
+                            {row.jun === 0 ? '' : formatNumberToMoney(row.jun)}
+                          </td>
+                          <td className="table__cell">
+                            {row.jul === 0 ? '' : formatNumberToMoney(row.jul)}
+                          </td>
+                          <td className="table__cell">
+                            {row.ago === 0 ? '' : formatNumberToMoney(row.ago)}
+                          </td>
+                          <td className="table__cell">
+                            {row.sep === 0 ? '' : formatNumberToMoney(row.sep)}
+                          </td>
+                          <td className="table__cell">
+                            {row.oct === 0 ? '' : formatNumberToMoney(row.oct)}
+                          </td>
+                          <td className="table__cell">
+                            {row.nov === 0 ? '' : formatNumberToMoney(row.nov)}
+                          </td>
+                          <td className="table__cell">
+                            {row.dic === 0 ? '' : formatNumberToMoney(row.dic)}
+                          </td>
+                          <td className="table__cell">
+                            {row.total_general === 0 ? '' : formatNumberToMoney(row.total_general)}
+                          </td>
+                        </tr>
+                      );
+                    })}
+                </tfoot>
+              </table>
+            </div>
+          )}
+        </div>
+      )}
+      {reportDataBySegments &&
+        !loadingReportBySegments &&
+        reportDataBySegments.map(segmentData => {
+          return (
+            <div className="reports__resumes" key={`report-segment-${segmentData.segment_id}`}>
+              {segmentData.data.length > 1 && (
+                <div className="table-container" key={`report-segment-${segmentData.segment_id}`}>
+                  <h2 style={{ paddingBottom: '8px' }}>{segmentData.segment_code}</h2>
+                  <table className="table">
+                    <thead className="table__head">
+                      <tr className="table__row--head">
+                        <th className="">Concepto</th>
+                        {segmentData.months.map(m => {
+                          return (
+                            <th
+                              key={`segment-resume${m.key}`}
+                              className="table__cell table__cell--head"
+                            >
+                              {m.label}
+                            </th>
+                          );
+                        })}
+                        <th>Total General</th>
+                      </tr>
+                    </thead>
+                    <tbody className="table__body">
+                      {segmentData.data
+                        .filter((_, index) => index < segmentData.data.length - 1)
+                        .map((row, index) => {
+                          return (
+                            <tr className="table__row" key={`report-resume-header-row-${index}`}>
+                              <td style={{ textWrap: 'nowrap' }} className="table__cell">
+                                {row.concept}
+                              </td>
+                              <td className="table__cell">
+                                {row.ene === 0 ? '' : formatNumberToMoney(row.ene)}
+                              </td>
+                              <td className="table__cell">
+                                {row.feb === 0 ? '' : formatNumberToMoney(row.feb)}
+                              </td>
+                              <td className="table__cell">
+                                {row.mar === 0 ? '' : formatNumberToMoney(row.mar)}
+                              </td>
+                              <td className="table__cell">
+                                {row.abr === 0 ? '' : formatNumberToMoney(row.abr)}
+                              </td>
+                              <td className="table__cell">
+                                {row.may === 0 ? '' : formatNumberToMoney(row.may)}
+                              </td>
+                              <td className="table__cell">
+                                {row.jun === 0 ? '' : formatNumberToMoney(row.jun)}
+                              </td>
+                              <td className="table__cell">
+                                {row.jul === 0 ? '' : formatNumberToMoney(row.jul)}
+                              </td>
+                              <td className="table__cell">
+                                {row.ago === 0 ? '' : formatNumberToMoney(row.ago)}
+                              </td>
+                              <td className="table__cell">
+                                {row.sep === 0 ? '' : formatNumberToMoney(row.sep)}
+                              </td>
+                              <td className="table__cell">
+                                {row.oct === 0 ? '' : formatNumberToMoney(row.oct)}
+                              </td>
+                              <td className="table__cell">
+                                {row.nov === 0 ? '' : formatNumberToMoney(row.nov)}
+                              </td>
+                              <td className="table__cell">
+                                {row.dic === 0 ? '' : formatNumberToMoney(row.dic)}
+                              </td>
+                              <td className="table__cell">
+                                {row.total_general === 0
+                                  ? ''
+                                  : formatNumberToMoney(row.total_general)}
+                              </td>
+                            </tr>
+                          );
+                        })}
+                    </tbody>
+                    <tfoot>
+                      {segmentData.data
+                        .filter((_, index) => index === segmentData.data.length - 1)
+                        .map((row, index) => {
+                          return (
+                            <tr
+                              style={{
+                                backgroundColor: '#006db6',
+                                color: 'white',
+                              }}
+                              key={`report-resume-row-${index}`}
+                            >
+                              <td className="table__cell" style={{ textWrap: 'nowrap' }}>
+                                {row.concept}
+                              </td>
+                              <td className="table__cell">
+                                {row.ene === 0 ? '' : formatNumberToMoney(row.ene)}
+                              </td>
+                              <td className="table__cell">
+                                {row.feb === 0 ? '' : formatNumberToMoney(row.feb)}
+                              </td>
+                              <td className="table__cell">
+                                {row.mar === 0 ? '' : formatNumberToMoney(row.mar)}
+                              </td>
+                              <td className="table__cell">
+                                {row.abr === 0 ? '' : formatNumberToMoney(row.abr)}
+                              </td>
+                              <td className="table__cell">
+                                {row.may === 0 ? '' : formatNumberToMoney(row.may)}
+                              </td>
+                              <td className="table__cell">
+                                {row.jun === 0 ? '' : formatNumberToMoney(row.jun)}
+                              </td>
+                              <td className="table__cell">
+                                {row.jul === 0 ? '' : formatNumberToMoney(row.jul)}
+                              </td>
+                              <td className="table__cell">
+                                {row.ago === 0 ? '' : formatNumberToMoney(row.ago)}
+                              </td>
+                              <td className="table__cell">
+                                {row.sep === 0 ? '' : formatNumberToMoney(row.sep)}
+                              </td>
+                              <td className="table__cell">
+                                {row.oct === 0 ? '' : formatNumberToMoney(row.oct)}
+                              </td>
+                              <td className="table__cell">
+                                {row.nov === 0 ? '' : formatNumberToMoney(row.nov)}
+                              </td>
+                              <td className="table__cell">
+                                {row.dic === 0 ? '' : formatNumberToMoney(row.dic)}
+                              </td>
+                              <td className="table__cell">
+                                {row.total_general === 0
+                                  ? ''
+                                  : formatNumberToMoney(row.total_general)}
+                              </td>
+                            </tr>
+                          );
+                        })}
+                    </tfoot>
+                  </table>
+                </div>
+              )}
+            </div>
+          );
+        })}
     </section>
   );
 };

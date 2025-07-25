@@ -70,11 +70,49 @@ export interface MasiveChangeConceptDto {
   accounting_account_id?: number;
   segment_id?: number;
   concept?: string;
-  supplier?: string; 
+  supplier?: string;
   new_concept: string;
 }
 
 export interface MasiveChangeConceptResponseDto {
   affected: number;
   message: string;
+}
+
+/* REPORTS */
+export interface MonthDto {
+  key: string;
+  label: string;
+}
+
+export interface MonthlyConceptRowDto {
+  concept: string;
+  total_general: number;
+  ene: number;
+  feb: number;
+  mar: number;
+  abr: number;
+  may: number;
+  jun: number;
+  jul: number;
+  ago: number;
+  sep: number;
+  oct: number;
+  nov: number;
+  dic: number;
+}
+
+export interface MonthlyReportDto {
+  months: MonthDto[];
+  data: MonthlyConceptRowDto[];
+}
+
+export interface MonthlyReportFiltersDto {
+  company_id?: number,
+  year: number
+}
+
+export interface MonthlyReportBySegmentsDto extends MonthlyReportDto {
+  segment_id: number;
+  segment_code: string;
 }
