@@ -58,9 +58,12 @@ export async function fetchMovementsYearConceptsResumeBySegments(filters: {
   company_id: number;
   year: number;
 }): Promise<MonthlyReportBySegmentsDto[]> {
-  const { data } = await api.get<MonthlyReportBySegmentsDto[]>('/movements/segmented-monthly-report', {
-    params: filters,
-  });
+  const { data } = await api.get<MonthlyReportBySegmentsDto[]>(
+    '/movements/segmented-monthly-report',
+    {
+      params: filters,
+    },
+  );
   return data;
 }
 

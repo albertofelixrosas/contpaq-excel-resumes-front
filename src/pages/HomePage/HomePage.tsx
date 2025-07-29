@@ -2,19 +2,43 @@ import { formatDateToLongSpanish } from '../../utils/dateUtils';
 import './HomePage.css';
 import toast from 'react-hot-toast';
 import { useEffect, useState } from 'react';
-import { api, getResource } from '../../services/api';
 import { MovementsHeatmap } from '../../components/CalendarHeatmap/CalendarHeatmap';
-import type { OptionRecord } from '../../types/reports';
-import type { MovementsHeatmapEntry } from '../../types/api-responses';
+import { useCompanies } from '../../hooks/useCompanies';
+import { useMovementsHeatmap } from '../../hooks/useMovementsHeatmap';
+import type { Company } from '../../models/company.model';
+import { useExcelSingleFileUpload } from '../../hooks/useExcelSingleFileUpload';
 
 export const HomePage = () => {
   const [file, setFile] = useState<File | null>(null);
-  const [loadingFile, setLoadingFile] = useState(false);
-  const [loadingCompanies, setLoadingCompanies] = useState(false);
-  const [loadingMovements, setLoadingMovements] = useState(false);
-  const [movements, setMovements] = useState<MovementsHeatmapEntry[]>([]);
-  const [companies, setCompanies] = useState<OptionRecord[]>([]);
-  const [selectedCompany, setSelectedCompany] = useState<OptionRecord | null>(null);
+  const [selectedCompany, setSelectedCompany] = useState<Company | null>(null);
+
+  const {
+    loading: loadingCompanies,
+    data: companies,
+    fetch: fetchCompanies,
+    error: companiesError,
+  } = useCompanies();
+
+  const {
+    data: movementsHeatmapData,
+    loading: loadingMovementsHeatmap,
+    error: movementsHeatmapError,
+    fetch: fetchMovementsHeatmap,
+  } = useMovementsHeatmap();
+
+  const {
+    loading: loadingFile,
+    data: fileUploadData,
+    error: fileUploadError,
+    create: uploadFile,
+  } = useExcelSingleFileUpload();
+
+  useEffect(() => {
+    if (fileUploadData) {
+      toast.success(fileUploadData.message);
+      setFile(null);
+    }
+  }, [fileUploadData]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
@@ -31,82 +55,28 @@ export const HomePage = () => {
       return;
     }
 
-    const formData = new FormData();
-    formData.append('file', file); // importante que el campo se llame exactamente igual: "file"
-
-    setLoadingFile(true);
-
-    interface ExcelSingleSuccessResponse {
-      message: string;
-      filename: string;
-    }
-
-    try {
-      const response = await api.post<ExcelSingleSuccessResponse>('/excel/single', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-
-      if (response.status === 201) {
-        toast.success(response.data.message);
-        refreshCompanies();
-        if (!!selectedCompany) {
-          refreshMovementsHistory();
-        }
-      } else {
-        toast.error(response.data.message);
-      }
-    } catch (err) {
-      console.error(err);
-      toast.error('Error al subir el archivo');
-    } finally {
-      setLoadingFile(false);
-      setFile(null);
-    }
-  };
-
-  const refreshCompanies = async () => {
-    try {
-      setLoadingCompanies(true);
-      const companies = await getResource('companies');
-      setCompanies(
-        companies.map(c => {
-          return { id: c.company_id, name: c.company_name };
-        }),
-      );
-    } catch (error) {
-      if (error instanceof Error) {
-        toast.error(error.message);
-      }
-    } finally {
-      setLoadingCompanies(false);
-    }
-  };
-
-  const refreshMovementsHistory = async () => {
-    try {
-      setLoadingMovements(true);
-      const movements = await getResource('movements/heatmap', { company_id: selectedCompany?.id });
-      setMovements(movements);
-    } catch (error) {
-      if (error instanceof Error) {
-        toast.error(error.message);
-      }
-    } finally {
-      setLoadingMovements(false);
-    }
+    await uploadFile({ file });
   };
 
   useEffect(() => {
-    refreshCompanies();
+    fetchCompanies();
   }, []);
 
   useEffect(() => {
-    if (selectedCompany === null) {
-      setMovements([]);
-    } else {
-      refreshMovementsHistory();
+    if (companiesError) {
+      toast.error(companiesError);
+    }
+    if (movementsHeatmapError) {
+      toast.error(movementsHeatmapError);
+    }
+    if (fileUploadError) {
+      toast.error(fileUploadError);
+    }
+  }, [companiesError, movementsHeatmapError, fileUploadError]);
+
+  useEffect(() => {
+    if (selectedCompany !== null) {
+      fetchMovementsHeatmap({ company_id: selectedCompany.company_id });
     }
   }, [selectedCompany]);
 
@@ -146,9 +116,9 @@ export const HomePage = () => {
           className="form__select"
           name="company_id"
           id="company-id"
-          value={`${!selectedCompany ? '' : selectedCompany.id}`}
+          value={`${!selectedCompany ? '' : selectedCompany.company_id}`}
           onChange={e => {
-            const company = companies.filter(c => c.id === parseInt(e.target.value))[0];
+            const company = companies.filter(c => c.company_id === parseInt(e.target.value))[0];
             if (!company) {
               setSelectedCompany(null);
             } else {
@@ -160,16 +130,16 @@ export const HomePage = () => {
           <option value="">Seleccione una empresa</option>
           {companies.map(c => {
             return (
-              <option key={c.id} value={c.id}>
-                {c.name}
+              <option key={c.company_id} value={c.company_id}>
+                {c.company_name}
               </option>
             );
           })}
         </select>
       </form>
-      {loadingMovements === false && movements.length > 0 && (
+      {loadingMovementsHeatmap === false && movementsHeatmapData.length > 0 && (
         <MovementsHeatmap
-          values={movements}
+          values={movementsHeatmapData}
           firstDatePreviusText="La primera vez que se registro un movimiento fue"
           finalDatePreviusText="La ultima vez que se registro un movimiento fue"
         />

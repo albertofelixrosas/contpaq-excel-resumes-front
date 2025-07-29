@@ -193,7 +193,7 @@ export const Reports = () => {
               <table className="table">
                 <thead className="table__head">
                   <tr className="table__row--head">
-                    <th className="">Concepto</th>
+                    <th className="table__th--concept">Concepto</th>
                     {reportData.months.map(m => {
                       return (
                         <th key={m.key} className="table__cell table__cell--head">
@@ -201,7 +201,7 @@ export const Reports = () => {
                         </th>
                       );
                     })}
-                    <th>Total General</th>
+                    <th>Total</th>
                   </tr>
                 </thead>
                 <tbody className="table__body">
@@ -210,7 +210,7 @@ export const Reports = () => {
                     .map((row, index) => {
                       return (
                         <tr className="table__row" key={`report-resume-header-row-${index}`}>
-                          <td style={{ textWrap: 'nowrap' }} className="table__cell">
+                          <td className="table__cell">
                             {row.concept}
                           </td>
                           <td className="table__cell">
@@ -268,7 +268,7 @@ export const Reports = () => {
                           }}
                           key={`report-resume-row-${index}`}
                         >
-                          <td className="table__cell" style={{ textWrap: 'nowrap' }}>
+                          <td className="table__cell">
                             {row.concept}
                           </td>
                           <td className="table__cell">
@@ -330,7 +330,7 @@ export const Reports = () => {
                   <table className="table">
                     <thead className="table__head">
                       <tr className="table__row--head">
-                        <th className="">Concepto</th>
+                        <th className="table__th--concept">Concepto</th>
                         {segmentData.months.map(m => {
                           return (
                             <th
@@ -341,7 +341,7 @@ export const Reports = () => {
                             </th>
                           );
                         })}
-                        <th>Total General</th>
+                        <th>Total</th>
                       </tr>
                     </thead>
                     <tbody className="table__body">
@@ -350,7 +350,7 @@ export const Reports = () => {
                         .map((row, index) => {
                           return (
                             <tr className="table__row" key={`report-resume-header-row-${index}`}>
-                              <td style={{ textWrap: 'nowrap' }} className="table__cell">
+                              <td className="table__cell">
                                 {row.concept}
                               </td>
                               <td className="table__cell">
@@ -410,7 +410,7 @@ export const Reports = () => {
                               }}
                               key={`report-resume-row-${index}`}
                             >
-                              <td className="table__cell" style={{ textWrap: 'nowrap' }}>
+                              <td className="table__cell">
                                 {row.concept}
                               </td>
                               <td className="table__cell">

@@ -2,12 +2,12 @@ import { useCallback, useState } from "react";
 import type { MovementHeatmapDto, MovementHeatmapFilters } from "../models/movement.model";
 import { fetchMovementsHeatmap } from "../services/movement.service";
 
-export function useMovementsHeatmap(initialFilters: MovementHeatmapFilters) {
+export function useMovementsHeatmap() {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<MovementHeatmapDto[]>([]);
   const [error, setError] = useState<string | null>(null);
 
-  const fetch = useCallback(async (filters = initialFilters) => {
+  const fetch = useCallback(async (filters: MovementHeatmapFilters) => {
     setLoading(true);
     try {
       const res = await fetchMovementsHeatmap(filters);

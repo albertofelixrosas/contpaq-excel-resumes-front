@@ -116,3 +116,12 @@ export interface MonthlyReportBySegmentsDto extends MonthlyReportDto {
   segment_id: number;
   segment_code: string;
 }
+
+export interface ExcelSingleFileDto {
+  file: File;
+}
+
+export interface ExcelSingleSuccessResponse {
+  message: string;
+  filename: string;
+}

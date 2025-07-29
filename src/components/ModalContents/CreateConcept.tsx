@@ -40,7 +40,7 @@ export const CreateConcept = (props: CreateConceptProps) => {
       await create({ name: newConcept, company_id });
       onCreate(`¡Se ha agregado el nuevo concepto "${newConcept}" con exito!`);
     } catch (error) {
-      console.error(error);
+      toast.error(error instanceof Error ? error.message : 'Error al crear el concepto');
     }
   };
 
