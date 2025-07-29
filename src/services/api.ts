@@ -1,7 +1,10 @@
 import axios from 'axios';
 
+const isDevelopment = import.meta.env.NODE_ENV === 'development';
+const apiUrl = isDevelopment ? import.meta.env.VITE_API_URL : 'http://localhost:3000';
+
 export const api = axios.create({
-  baseURL: 'http://localhost:3000',
+  baseURL: apiUrl,
   timeout: 30000,
 });
 
