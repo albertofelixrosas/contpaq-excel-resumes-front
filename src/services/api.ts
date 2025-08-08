@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-const isDevelopment = import.meta.env.NODE_ENV === 'development';
-const apiUrl = isDevelopment ? import.meta.env.VITE_API_URL : 'http://localhost:3000';
+// const isDevelopment = import.meta.env.NODE_ENV === 'development';
+const apiUrl = import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL : 'http://localhost:3000';
 
 console.log(`Environment: ${import.meta.env.NODE_ENV}`);
 console.log(`Environment: ${import.meta.env.VITE_API_URL}`);
