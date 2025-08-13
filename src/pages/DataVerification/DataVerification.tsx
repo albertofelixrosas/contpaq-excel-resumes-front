@@ -30,7 +30,7 @@ export const DataVerification = () => {
   const [selectedSupplier, setSelectedSupplier] = useState<string>('');
   const [movementsFilters, setMovementsFilters] = useState<MovementFilterDto>({
     page: 1,
-    limit: 20,
+    limit: 50,
     start_date: lastMonth,
     end_date: today,
   });
@@ -284,11 +284,13 @@ export const DataVerification = () => {
               disabled={loadingCompanies}
             >
               <option value="">(Empresa sin especificar)</option>
-              {companies.map(c => (
-                <option key={`company_${c.company_id}`} value={String(c.company_id)}>
-                  {c.company_name}
-                </option>
-              ))}
+              {companies
+                .sort((a, b) => a.company_name.localeCompare(b.company_name))
+                .map(c => (
+                  <option key={`company_${c.company_id}`} value={String(c.company_id)}>
+                    {c.company_name}
+                  </option>
+                ))}
             </select>
           </div>
           <div className="data-verification__filter">
@@ -321,14 +323,16 @@ export const DataVerification = () => {
               }}
             >
               <option value="">(Cuenta contable sin especificar)</option>
-              {accounts.map(a => (
-                <option
-                  key={`account_${a.accounting_account_id}`}
-                  value={String(a.accounting_account_id)}
-                >
-                  {a.name}
-                </option>
-              ))}
+              {accounts
+                .sort((a, b) => a.name.localeCompare(b.name))
+                .map(a => (
+                  <option
+                    key={`account_${a.accounting_account_id}`}
+                    value={String(a.accounting_account_id)}
+                  >
+                    {a.name}
+                  </option>
+                ))}
             </select>
           </div>
           <div className="data-verification__filter">
@@ -359,11 +363,13 @@ export const DataVerification = () => {
               }}
             >
               <option value="">(Segmento sin especificar)</option>
-              {segments.map(s => (
-                <option key={`segment_${s.segment_id}`} value={String(s.segment_id)}>
-                  {s.code}
-                </option>
-              ))}
+              {segments
+                .sort((a, b) => a.code.localeCompare(b.code))
+                .map(s => (
+                  <option key={`segment_${s.segment_id}`} value={String(s.segment_id)}>
+                    {s.code}
+                  </option>
+                ))}
             </select>
           </div>
           <div className="data-verification__filter">
@@ -392,11 +398,13 @@ export const DataVerification = () => {
               }}
             >
               <option value="">(Concepto sin especificar)</option>
-              {movementConcepts.map((c, index) => (
-                <option key={`concept_${c}-${index}`} value={String(c)}>
-                  {c}
-                </option>
-              ))}
+              {movementConcepts
+                .sort((a, b) => a.localeCompare(b))
+                .map((c, index) => (
+                  <option key={`concept_${c}-${index}`} value={String(c)}>
+                    {c}
+                  </option>
+                ))}
             </select>
           </div>
           <div className="data-verification__filter">
@@ -425,11 +433,13 @@ export const DataVerification = () => {
               }}
             >
               <option value="">(Provedor sin especificar)</option>
-              {suppliers.map((s, index) => (
-                <option key={`supplier_${index}`} value={String(s)}>
-                  {s}
-                </option>
-              ))}
+              {suppliers
+                .sort((a, b) => a.localeCompare(b))
+                .map((s, index) => (
+                  <option key={`supplier_${index}`} value={String(s)}>
+                    {s}
+                  </option>
+                ))}
             </select>
           </div>
           <div className="data-verification__dates">
@@ -490,6 +500,9 @@ export const DataVerification = () => {
               <option value="10">10</option>
               <option value="15">15</option>
               <option value="20">20</option>
+              <option value="30">30</option>
+              <option value="50">50</option>
+              <option value="100">100</option>
             </select>
           </div>
         </div>

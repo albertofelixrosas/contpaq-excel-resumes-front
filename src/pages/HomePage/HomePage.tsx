@@ -7,11 +7,13 @@ import { useCompanies } from '../../hooks/useCompanies';
 import { useMovementsHeatmap } from '../../hooks/useMovementsHeatmap';
 import type { Company } from '../../models/company.model';
 import { useExcelSingleFileUpload } from '../../hooks/useExcelSingleFileUpload';
+import { LoadingPopUp } from '../../components/UI/LoadingPopUp';
 
 export const HomePage = () => {
   const [file, setFile] = useState<File | null>(null);
+  const [fileInputKey, setFileInputKey] = useState(Date.now());
   const [selectedCompany, setSelectedCompany] = useState<Company | null>(null);
-
+  
   const {
     loading: loadingCompanies,
     data: companies,
@@ -41,11 +43,7 @@ export const HomePage = () => {
   }, [fileUploadData]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files.length > 0) {
-      setFile(e.target.files[0]);
-    } else if (e.target.files?.length === 0) {
-      setFile(null);
-    }
+    setFile(e.target.files?.[0] || null);
   };
 
   const handleSubmitUploadFile = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -56,6 +54,10 @@ export const HomePage = () => {
     }
 
     await uploadFile({ file });
+    if (selectedCompany !== null) {
+      fetchMovementsHeatmap({ company_id: selectedCompany.company_id });
+    }
+    setFileInputKey(Date.now());
   };
 
   useEffect(() => {
@@ -95,16 +97,13 @@ export const HomePage = () => {
       <form className="home-form" onSubmit={handleSubmitUploadFile}>
         <input
           type="file"
+          key={fileInputKey}
           name="single"
           id="file"
           className="form__input-file"
           onChange={handleFileChange}
         />
-        <button
-          type="submit"
-          className="button button--ghost"
-          disabled={loadingFile || file === null}
-        >
+        <button type="submit" className="button button--ghost" disabled={loadingFile}>
           Enviar datos
         </button>
       </form>
@@ -144,6 +143,11 @@ export const HomePage = () => {
           finalDatePreviusText="La ultima vez que se registro un movimiento fue"
         />
       )}
+      <LoadingPopUp
+        title="Cargando excel"
+        text="Esto puede tardar un buen tiempo"
+        isOpen={loadingFile}
+      />
     </section>
   );
 };

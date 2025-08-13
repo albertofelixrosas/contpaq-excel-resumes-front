@@ -3,14 +3,9 @@ import axios from 'axios';
 // const isDevelopment = import.meta.env.NODE_ENV === 'development';
 const apiUrl = import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL : 'http://localhost:3000';
 
-console.log(`Environment: ${import.meta.env.NODE_ENV}`);
-console.log(`Environment: ${import.meta.env.VITE_API_URL}`);
-
-console.log(`API URL: ${apiUrl}`);
-
 export const api = axios.create({
   baseURL: apiUrl,
-  timeout: 30000,
+  timeout: 130000,
 });
 
 export const getResource = <T>(resource: string, params = {}) =>
