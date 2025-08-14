@@ -37,8 +37,6 @@ export const DataVerification = () => {
     end_date: today,
   });
   const [showEditConcept, setShowEditConcept] = useState(false);
-  // Concepto de la vista de verificar
-  const [newConcept, setNewConcept] = useState('');
   // Concepto del modal de cambiar concepto especifico
   const [newConceptModal, setNewConceptModal] = useState<Concept | null>(null);
   const [selectedConcept, setSelectedConcept] = useState('');
@@ -232,7 +230,7 @@ export const DataVerification = () => {
       await updateMovement(movement_id, {
         concept: newConcept,
       });
-      setNewConcept('');
+      setNewConceptModal(null);
       setShowEditConcept(false);
       fetchMovements(movementsFilters);
       toast.success('¡Se ha actualizado el concepto con exito!');

@@ -6,6 +6,7 @@ import { Reports } from './pages/Reports/Reports';
 import { DataVerification } from './pages/DataVerification/DataVerification';
 import { MasiveChangePage } from './pages/MasiveChangePage/MasiveChangePage';
 import './App.css';
+import { ConceptsCRUD } from './pages/ConceptsCRUD/ConceptsCRUD';
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
           <Route path="/reports" element={<Reports />} />
           <Route path="/data-verification" element={<DataVerification />} />
           <Route path="/masive-change" element={<MasiveChangePage />} />
+          <Route path="/concepts" element={<ConceptsCRUD />} />
           <Route path="*" element={<NotFoundPage />} />
         </Route>
       </Routes>

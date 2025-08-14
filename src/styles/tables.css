@@ -23,11 +23,14 @@
 .table__row {
   border-bottom: 1px solid #ccc;
   transition: background-color ease-in 0.2s;
-  cursor: pointer;
 }
 
 .table__row:hover {
   background-color: #d6e1e9 !important;
+}
+
+.table--hoverable .table__row:hover {
+  cursor: pointer;
 }
 
 .table__row--head {
@@ -96,4 +99,26 @@
 
 .table__cell--action:hover {
   text-decoration: underline;
+}
+
+.table__button--orange {
+  background-color: orange;
+}
+
+.table__button--red {
+  background-color: orangered;
+}
+
+.table__button--orange,
+.table__button--red {
+  border: none;
+  padding: 8px 24px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: opacity ease-in 0.2s;
+}
+
+.table__button--orange:hover,
+.table__button--red:hover {
+  opacity: 0.75;
 }

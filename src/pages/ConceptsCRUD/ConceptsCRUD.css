@@ -1,0 +1,9 @@
+.table__cell--actions-th {
+  width: 200px;
+}
+
+.concepts__buttons {
+  display: flex;
+  justify-content: flex-end;
+}
+

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { formatDateToLongSpanish } from '../../utils/dateUtils';
 import { OptionsToSelect } from '../UI/OptionsToSelect';
 import './EditMovementConcept.css';
@@ -37,8 +37,6 @@ export const EditMovementConcept = (props: EditMovementConceptProps) => {
 
   const [newConceptToAdd, setNewConceptToAdd] = useState('');
   const [showNewConceptInputForm, setShowNewConceptInputForm] = useState(false);
-
-  useEffect(() => {}, []);
 
   const handleOnSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -109,9 +107,6 @@ export const EditMovementConcept = (props: EditMovementConceptProps) => {
             })}
             selectedOption={newConcept === null ? null : newConcept.name}
             setSelectedOption={option => {
-              console.log(
-                option === null ? null : currentConcepts.filter(cc => cc.name === option.value)[0],
-              );
               setNewConcept(
                 option === null ? null : currentConcepts.filter(cc => cc.name === option.value)[0],
               );

@@ -49,6 +49,14 @@ export default function SideMenu({ isActive }: SideMenuProps) {
         >
           Cambios masivos
         </li>
+        <li
+          className="sidebar__section"
+          onClick={() => {
+            navigate('/concepts');
+          }}
+        >
+          Administrar conceptos
+        </li>
       </ul>
     </aside>
   );
