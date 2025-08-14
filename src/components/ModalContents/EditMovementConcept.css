@@ -11,10 +11,6 @@
   gap: 16px;
 }
 
-.update-movement-form__entry {
-
-}
-
 .update-movement-form__text {
   padding: 16px;
 }
@@ -45,4 +41,10 @@
 .update-movement-form__list-item:hover {
   background-color: #006DB6;
   color: #eee;
+}
+
+.update-movement-form__new-concept-input {
+  display: grid;
+  grid-template-columns: 4fr 1fr;
+  gap: 16px;
 }

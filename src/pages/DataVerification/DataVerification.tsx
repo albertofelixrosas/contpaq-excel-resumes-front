@@ -18,6 +18,8 @@ import type {
 } from '../../models/accounting-account.model';
 import { useMovementsSuppliers } from '../../hooks/useMovementsSuppliers';
 import { useMovementsConcetps } from '../../hooks/useMovementsConcepts';
+import { useConcepts } from '../../hooks/useConcepts';
+import type { Concept } from '../../models/concept.model';
 
 type CompanyIdFilter = { company_id?: number };
 
@@ -35,7 +37,10 @@ export const DataVerification = () => {
     end_date: today,
   });
   const [showEditConcept, setShowEditConcept] = useState(false);
+  // Concepto de la vista de verificar
   const [newConcept, setNewConcept] = useState('');
+  // Concepto del modal de cambiar concepto especifico
+  const [newConceptModal, setNewConceptModal] = useState<Concept | null>(null);
   const [selectedConcept, setSelectedConcept] = useState('');
   const [segmentsFilter, setSegmentsFilter] = useState<GetSegmentsQueryDto>({});
   const [accountsFilter, setAccountsFilter] = useState<GetAccountingAccountsQueryDto>({});
@@ -85,6 +90,14 @@ export const DataVerification = () => {
     loading: loadingMovementConcepts,
   } = useMovementsConcetps();
 
+  const {
+    data: currentConcepts,
+    fetch: fetchConcepts,
+    create: createConcept,
+    error: errorConcepts,
+    loading: loadingConcepts,
+  } = useConcepts();
+
   useEffect(() => {
     fetchCompanies();
   }, []);
@@ -108,7 +121,17 @@ export const DataVerification = () => {
     if (movementConceptsError) {
       toast.error(movementConceptsError);
     }
-  }, [companiesError, movementError, accountsError, segmentsError, movementConceptsError]);
+    if (errorConcepts) {
+      toast.error(errorConcepts);
+    }
+  }, [
+    companiesError,
+    movementError,
+    accountsError,
+    segmentsError,
+    movementConceptsError,
+    errorConcepts,
+  ]);
 
   useEffect(() => {
     if (selectedCompany === null) {
@@ -125,6 +148,7 @@ export const DataVerification = () => {
       setAccountsFilter({ company_id: selectedCompany.company_id });
       setSuppliersFilter({ company_id: selectedCompany.company_id });
       setMovementsConcetpsFilter({ company_id: selectedCompany.company_id });
+      fetchConcepts({ company_id: selectedCompany.company_id });
     }
   }, [selectedCompany]);
 
@@ -199,9 +223,13 @@ export const DataVerification = () => {
     fetchMovements(movementsFilters);
   };
 
-  const handleOnEditConcept = async () => {
+  const handleOnEditConcept = async (movement_id: number, newConcept: string) => {
     try {
-      await updateMovement(selectedMovement?.movement_id || 0, {
+      console.log({
+        movement_id,
+        newConcept,
+      });
+      await updateMovement(movement_id, {
         concept: newConcept,
       });
       setNewConcept('');
@@ -503,6 +531,8 @@ export const DataVerification = () => {
               <option value="30">30</option>
               <option value="50">50</option>
               <option value="100">100</option>
+              <option value="200">200</option>
+              <option value="300">300</option>
             </select>
           </div>
         </div>
@@ -535,7 +565,7 @@ export const DataVerification = () => {
         </div>
       )}
 
-      {!loadingMovements && (movements?.data.length || 0) > 0 && (
+      {!loadingMovements && (movements?.data.length || 0) > 0 && selectedCompany && (
         <>
           <div className="table-container">
             <table className="table table--venues">
@@ -625,8 +655,16 @@ export const DataVerification = () => {
               onCancel={() => {
                 setShowEditConcept(false);
               }}
-              newConcept={newConcept}
-              setNewConcept={setNewConcept}
+              newConcept={newConceptModal}
+              setNewConcept={setNewConceptModal}
+              currentConcepts={currentConcepts}
+              companyId={selectedCompany?.company_id || 0}
+              createNewConcept={async (company_id, newConceptToAdd) => {
+                await createConcept({ company_id, name: newConceptToAdd });
+                fetchConcepts({ company_id });
+              }}
+              loadingConcepts={loadingConcepts}
+              selectedMovementId={selectedMovement.movement_id}
             />
           }
           isOpen={showEditConcept}

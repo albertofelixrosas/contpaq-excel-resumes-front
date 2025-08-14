@@ -1,23 +1,62 @@
-import { DEFAULT_CONCEPTS } from '../../enums/Concepts';
+import { useEffect, useState } from 'react';
 import { formatDateToLongSpanish } from '../../utils/dateUtils';
+import { OptionsToSelect } from '../UI/OptionsToSelect';
 import './EditMovementConcept.css';
+import type { Concept } from '../../models/concept.model';
 
 interface EditMovementConceptProps {
   onCancel: () => void;
-  onEdit: () => void;
+  onEdit: (movement_id: number, newConcept: string) => void;
   date: string;
   supplier: string;
   previusConcept: string;
-  newConcept: string;
-  setNewConcept: (concept: string) => void;
+  newConcept: Concept | null;
+  setNewConcept: (concept: Concept | null) => void;
+  currentConcepts: Concept[];
+  loadingConcepts: boolean;
+  createNewConcept: (company_id: number, newConceptToAdd: string) => void;
+  companyId: number;
+  selectedMovementId: number
 }
 
 export const EditMovementConcept = (props: EditMovementConceptProps) => {
-  const { onEdit, onCancel, date, supplier, previusConcept, newConcept, setNewConcept } = props;
+  const {
+    onEdit,
+    onCancel,
+    date,
+    supplier,
+    previusConcept,
+    newConcept,
+    setNewConcept,
+    currentConcepts,
+    createNewConcept,
+    companyId: company_id,
+    loadingConcepts,
+    selectedMovementId
+  } = props;
+
+  const [newConceptToAdd, setNewConceptToAdd] = useState('');
+  const [showNewConceptInputForm, setShowNewConceptInputForm] = useState(false);
+
+  useEffect(() => {}, []);
 
   const handleOnSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    onEdit();
+    onEdit(selectedMovementId, newConcept?.name || '');
+  };
+
+  const handleOnSubmitNewConcept = () => {
+    createNewConcept(company_id, newConceptToAdd);
+  };
+
+  const isValidNewConceptInput = () => {
+    if (!newConceptToAdd) {
+      return false;
+    }
+    const result = currentConcepts.find(
+      cc => cc.name.toLowerCase() === newConceptToAdd.toLowerCase(),
+    );
+    return result === undefined;
   };
 
   return (
@@ -48,7 +87,7 @@ export const EditMovementConcept = (props: EditMovementConceptProps) => {
       </div>
       <div className="update-movement-form__entry">
         <label className="form__label" htmlFor="concept">
-          Concepto anterior
+          Concepto actual
         </label>
         <textarea
           className="form__text-area"
@@ -62,24 +101,56 @@ export const EditMovementConcept = (props: EditMovementConceptProps) => {
         <label className="form__label" htmlFor="new-concept">
           Concepto nuevo
         </label>
-        <ul className="update-movement-form__list" id="new-concept">
-          {DEFAULT_CONCEPTS.map(c => {
-            return (
-              <li
-                onClick={() => {
-                  setNewConcept(c);
-                }}
-                className={`update-movement-form__list-item ${newConcept === c ? 'update-movement-form__list-item--selected' : ''} `}
-                key={`moda-concept-${c}`}
-              >
-                {c}
-              </li>
-            );
-          })}
-        </ul>
+        <div className="reports__filter">
+          <OptionsToSelect<string>
+            name="new-concept-option"
+            options={currentConcepts.map(c => {
+              return { label: c.name, value: c.name };
+            })}
+            selectedOption={newConcept === null ? null : newConcept.name}
+            setSelectedOption={option => {
+              console.log(
+                option === null ? null : currentConcepts.filter(cc => cc.name === option.value)[0],
+              );
+              setNewConcept(
+                option === null ? null : currentConcepts.filter(cc => cc.name === option.value)[0],
+              );
+            }}
+            onClickNewItem={() => {
+              setShowNewConceptInputForm(!showNewConceptInputForm);
+            }}
+          />
+        </div>
       </div>
+      {showNewConceptInputForm && (
+        <div>
+          <label htmlFor="" className="form__label">
+            Introduzca el texto del nuevo concepto
+          </label>
+          <div className="update-movement-form__new-concept-input">
+            <input
+              type="text"
+              className="form__input"
+              name=""
+              id=""
+              value={newConceptToAdd}
+              onChange={e => {
+                setNewConceptToAdd(e.target.value);
+              }}
+            />
+            <button
+              type="button"
+              className="button"
+              disabled={!isValidNewConceptInput() && !loadingConcepts}
+              onClick={handleOnSubmitNewConcept}
+            >
+              Agregar
+            </button>
+          </div>
+        </div>
+      )}
       <div className="update-movement-form__actions">
-        <button className="button" type="submit">
+        <button className="button" type="submit" disabled={!newConcept}>
           Cambiar
         </button>
         <button className="button button--ghost" type="button" onClick={onCancel}>
