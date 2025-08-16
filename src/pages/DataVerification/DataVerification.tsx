@@ -303,15 +303,6 @@ export const DataVerification = () => {
     }
   };
 
-  const handleCopyMovementsOnClick = async () => {
-    try {
-      await navigator.clipboard.writeText('');
-      toast.success('Se ha copiado la información con exito');
-    } catch (error) {
-      toast.success(error instanceof Error ? `${error.message}` : 'Ha ocurrido un error al copiar');
-    }
-  };
-
   // Cargar por defecto la primera empresa de la lista
   useEffect(() => {
     if (companies.length > 0) {
