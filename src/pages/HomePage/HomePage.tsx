@@ -13,7 +13,7 @@ export const HomePage = () => {
   const [file, setFile] = useState<File | null>(null);
   const [fileInputKey, setFileInputKey] = useState(Date.now());
   const [selectedCompany, setSelectedCompany] = useState<Company | null>(null);
-  
+
   const {
     loading: loadingCompanies,
     data: companies,
@@ -81,6 +81,13 @@ export const HomePage = () => {
       fetchMovementsHeatmap({ company_id: selectedCompany.company_id });
     }
   }, [selectedCompany]);
+
+  // Cargar por defecto la primera empresa de la lista
+  useEffect(() => {
+    if (companies.length > 0) {
+      setSelectedCompany(companies[0]);
+    }
+  }, [companies]);
 
   return (
     <section className="page">

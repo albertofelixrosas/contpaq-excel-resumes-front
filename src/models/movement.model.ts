@@ -33,11 +33,11 @@ export interface MovementReportDto {
   account_name: string;
   segment_code: string;
   date: string; // si prefieres Date, cámbialo
-  number: number;
+  number: number | null;
   supplier: string;
   concept: string;
   reference: string;
-  charge: number;
+  charge: string | null;
 }
 
 export interface MovementFilterDto {

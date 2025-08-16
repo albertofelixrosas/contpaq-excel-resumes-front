@@ -254,6 +254,13 @@ export const MasiveChangePage = () => {
     return !(isSelectedAccount || isSelectedSegment || isSelectedConcept || isSelectedSupplier);
   };
 
+  // Cargar por defecto la primera empresa de la lista
+  useEffect(() => {
+    if (companies.length > 0) {
+      setSelectedCompany(companies[0]);
+    }
+  }, [companies]);
+
   return (
     <section className="page">
       <header className="page__header">

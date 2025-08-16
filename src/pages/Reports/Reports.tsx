@@ -70,6 +70,21 @@ export const Reports = () => {
     });
   };
 
+  // Cargar por defecto la primera empresa de la lista
+  useEffect(() => {
+    setSelectedCompany(companies[0]);
+    if (companies.length > 0) {
+      setReportFilters({
+        company_id: companies[0].company_id,
+        ...reportFilters,
+      });
+    }
+  }, [companies]);
+
+  const isValidPrint = () => {
+    return reportData !== null;
+  };
+
   return (
     <section className="page">
       <header className="page__header app--hidden-in-print">
@@ -154,6 +169,7 @@ export const Reports = () => {
               className="button button--ghost app--hidden-in-print"
               type="button"
               onClick={() => window.print()}
+              disabled={!isValidPrint() || selectedCompany === null}
             >
               Imprimir
             </button>
@@ -210,9 +226,7 @@ export const Reports = () => {
                     .map((row, index) => {
                       return (
                         <tr className="table__row" key={`report-resume-header-row-${index}`}>
-                          <td className="table__cell">
-                            {row.concept}
-                          </td>
+                          <td className="table__cell">{row.concept}</td>
                           <td className="table__cell">
                             {row.ene === 0 ? '' : formatNumberToMoney(row.ene)}
                           </td>
@@ -268,9 +282,7 @@ export const Reports = () => {
                           }}
                           key={`report-resume-row-${index}`}
                         >
-                          <td className="table__cell">
-                            {row.concept}
-                          </td>
+                          <td className="table__cell">{row.concept}</td>
                           <td className="table__cell">
                             {row.ene === 0 ? '' : formatNumberToMoney(row.ene)}
                           </td>
@@ -350,9 +362,7 @@ export const Reports = () => {
                         .map((row, index) => {
                           return (
                             <tr className="table__row" key={`report-resume-header-row-${index}`}>
-                              <td className="table__cell">
-                                {row.concept}
-                              </td>
+                              <td className="table__cell">{row.concept}</td>
                               <td className="table__cell">
                                 {row.ene === 0 ? '' : formatNumberToMoney(row.ene)}
                               </td>
@@ -410,9 +420,7 @@ export const Reports = () => {
                               }}
                               key={`report-resume-row-${index}`}
                             >
-                              <td className="table__cell">
-                                {row.concept}
-                              </td>
+                              <td className="table__cell">{row.concept}</td>
                               <td className="table__cell">
                                 {row.ene === 0 ? '' : formatNumberToMoney(row.ene)}
                               </td>

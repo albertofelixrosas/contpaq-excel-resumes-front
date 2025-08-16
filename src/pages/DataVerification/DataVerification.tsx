@@ -20,6 +20,8 @@ import { useMovementsSuppliers } from '../../hooks/useMovementsSuppliers';
 import { useMovementsConcetps } from '../../hooks/useMovementsConcepts';
 import { useConcepts } from '../../hooks/useConcepts';
 import type { Concept } from '../../models/concept.model';
+import { FaRegEdit } from 'react-icons/fa';
+import { slashAndSpanishMonthDate } from '../../utils/dateUtils';
 
 type CompanyIdFilter = { company_id?: number };
 
@@ -266,6 +268,60 @@ export const DataVerification = () => {
     }
     return true;
   };
+
+  const convertMovementDateToFinalValue = (date: string) => {
+    const dateString = date.slice(0, 10);
+    const [year, month, day] = dateString.split('-');
+    const dateValue = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+    return slashAndSpanishMonthDate(dateValue);
+  };
+
+  const generateMovementsToClipboardText = async () => {
+    if (movements) {
+      const movementsRows = movements.data.map(m => {
+        const { date, number, supplier, concept, charge } = m;
+        const formatedDate = convertMovementDateToFinalValue(date);
+
+        const finalCharge =
+          charge === null ? '' : !charge ? '' : parseFloat(charge).toLocaleString('en-US');
+
+        const values = [formatedDate, '', number ? number : '', supplier, concept, finalCharge];
+
+        return values.join('\t');
+      });
+
+      const result = movementsRows.join('\n');
+
+      try {
+        await navigator.clipboard.writeText(result);
+        toast.success('¡Se han copiado los movimientos con exito!');
+      } catch (error) {
+        toast.success(
+          error instanceof Error ? error.message : 'No se logro copiar los movimientos...',
+        );
+      }
+    }
+  };
+
+  const handleCopyMovementsOnClick = async () => {
+    try {
+      await navigator.clipboard.writeText('');
+      toast.success('Se ha copiado la información con exito');
+    } catch (error) {
+      toast.success(error instanceof Error ? `${error.message}` : 'Ha ocurrido un error al copiar');
+    }
+  };
+
+  // Cargar por defecto la primera empresa de la lista
+  useEffect(() => {
+    if (companies.length > 0) {
+      setSelectedCompany(companies[0]);
+      setMovementsFilters({
+        ...movementsFilters,
+        company_id: companies[0].company_id,
+      });
+    }
+  }, [companies]);
 
   return (
     <section className="page">
@@ -538,6 +594,16 @@ export const DataVerification = () => {
           <button className="button" type="submit" disabled={!movementsFiltersAreValid()}>
             Filtrar
           </button>
+          {movements && (
+            <button
+              className="button button--ghost"
+              type="submit"
+              disabled={movements.data.length === 0}
+              onClick={generateMovementsToClipboardText}
+            >
+              Copiar
+            </button>
+          )}
         </div>
       </form>
 
@@ -569,57 +635,51 @@ export const DataVerification = () => {
             <table className="table table--venues">
               <thead className="table__head">
                 <tr className="table__row--head">
-                  <th className="table__cell table__cell--head">Empresa</th>
-                  <th className="table__cell table__cell--head">N° C. Contable</th>
-                  <th className="table__cell table__cell--head">Cuenta contable</th>
-                  <th className="table__cell table__cell--head">Segmento</th>
                   <th className="table__cell table__cell--head">Fecha</th>
                   <th className="table__cell table__cell--head">Numero</th>
+                  {/* FOLIO */}
                   <th className="table__cell table__cell--head">Proveedor</th>
+                  {/* DESCRIPCION */}
                   <th className="table__cell table__cell--head">Concepto</th>
-                  <th className="table__cell table__cell--head">Referencia</th>
                   <th className="table__cell table__cell--head">Cargo</th>
+                  {/* IMPORTE */}
+                  <th className="table__cell table__cell--head">Acciones</th>
                 </tr>
               </thead>
               <tbody className="table__body">
                 {movements?.data.map(movement => {
-                  const {
-                    movement_id,
-                    company_name,
-                    acount_code,
-                    account_name,
-                    segment_code,
-                    date,
-                    number,
-                    supplier,
-                    concept,
-                    reference,
-                    charge,
-                  } = movement;
+                  const { movement_id, date, number, supplier, concept, charge } = movement;
+                  const formatedDate = convertMovementDateToFinalValue(date);
 
                   return (
-                    <tr
-                      className="table__row"
-                      key={movement_id}
-                      onClick={() => {
-                        setShowEditConcept(true);
-                        setSelectedMovement(movement);
-                      }}
-                    >
-                      <td className="table__cell">{company_name}</td>
+                    <tr className="table__row" key={movement_id}>
                       <td style={{ textWrap: 'nowrap' }} className="table__cell">
-                        {acount_code.slice(0, 11)}
+                        {formatedDate}
                       </td>
-                      <td className="table__cell">{account_name}</td>
-                      <td className="table__cell">{segment_code}</td>
-                      <td style={{ textWrap: 'nowrap' }} className="table__cell">
-                        {date.slice(0, 10)}
+                      <td className="table__cell">
+                        {!number ? '' : number.toLocaleString('en-US')}
                       </td>
-                      <td className="table__cell">{number}</td>
                       <td className="table__cell">{supplier}</td>
                       <td className="table__cell">{concept}</td>
-                      <td className="table__cell">{reference}</td>
-                      <td className="table__cell">{isNaN(charge) ? '' : charge}</td>
+                      <td className="table__cell">
+                        {charge === null
+                          ? ''
+                          : !charge
+                            ? ''
+                            : parseFloat(charge).toLocaleString('en-US')}
+                      </td>
+                      <td className="table__cell">
+                        <button
+                          className="table__button--orange"
+                          type="button"
+                          onClick={() => {
+                            setShowEditConcept(true);
+                            setSelectedMovement(movement);
+                          }}
+                        >
+                          <FaRegEdit color="white" size={20} />
+                        </button>
+                      </td>
                     </tr>
                   );
                 })}

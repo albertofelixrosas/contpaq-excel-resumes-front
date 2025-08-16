@@ -11,3 +11,11 @@ export function subtractMonths(date: Date, months: number): Date {
   d.setMonth(d.getMonth() - months);
   return d;
 }
+
+export function slashAndSpanishMonthDate(date: Date): string {
+  let formattedMonth = new Intl.DateTimeFormat('es-ES', { month: 'short' }).format(date);
+
+  const finalMonth = `${formattedMonth[0].toUpperCase()}${formattedMonth.toLowerCase().slice(1)}`;
+
+  return `${(date.getDate() + '').padStart(2, '0')}/${finalMonth}/${date.getFullYear()}`;
+}
