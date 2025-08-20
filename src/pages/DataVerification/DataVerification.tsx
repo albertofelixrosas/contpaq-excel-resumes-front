@@ -46,6 +46,7 @@ export const DataVerification = () => {
   const [accountsFilter, setAccountsFilter] = useState<GetAccountingAccountsQueryDto>({});
   const [suppliersFilter, setSuppliersFilter] = useState<CompanyIdFilter>({});
   const [movementsConcetpsFilter, setMovementsConcetpsFilter] = useState<CompanyIdFilter>({});
+  const [typeFilter, setTypeFilter] = useState<'ALL' | 'APK' | 'GG'>('ALL');
 
   const {
     loading: loadingMovements,
@@ -178,24 +179,60 @@ export const DataVerification = () => {
 
   useEffect(() => {
     if (selectedAccount) {
-      setMovementsFilters({
-        ...movementsFilters,
+      setMovementsFilters(prev => ({
+        ...prev,
         accounting_account_id: selectedAccount.accounting_account_id,
-      });
+      }));
     }
+  }, [selectedAccount]);
+
+  useEffect(() => {
     if (selectedSegment) {
-      setMovementsFilters({
-        ...movementsFilters,
-        segment_id: selectedSegment.segment_id,
+      setMovementsFilters(prev => {
+        const { segment_type, ...rest } = prev;
+        return {
+          ...rest,
+          segment_id: selectedSegment.segment_id,
+          segment_type: 'ALL', // aseguras que no se mezclen
+        };
+      });
+      setTypeFilter('ALL'); // sincronizas también el estado del select
+    } else {
+      // caso "ALL" => limpiar segment_id
+      setMovementsFilters(prev => {
+        const { segment_id, ...rest } = prev;
+        return rest;
       });
     }
+  }, [selectedSegment]);
+
+  useEffect(() => {
     if (selectedConcept) {
-      setMovementsFilters({
-        ...movementsFilters,
+      setMovementsFilters(prev => ({
+        ...prev,
         concept: selectedConcept,
+      }));
+    }
+  }, [selectedConcept]);
+
+  useEffect(() => {
+    if (typeFilter === 'APK' || typeFilter === 'GG') {
+      setMovementsFilters(prev => {
+        const { segment_id, ...rest } = prev;
+        return {
+          ...rest,
+          segment_type: typeFilter,
+        };
+      });
+      setSelectedSegment(null);
+    } else if (typeFilter === 'ALL') {
+      // ✅ si vuelve a ALL, removemos el filtro
+      setMovementsFilters(prev => {
+        const { segment_type, ...rest } = prev;
+        return rest;
       });
     }
-  }, [selectedAccount, selectedSegment, selectedConcept]);
+  }, [typeFilter]);
 
   useEffect(() => {
     if (!!movementsFilters.start_date && !!movementsFilters.end_date) {
@@ -219,6 +256,8 @@ export const DataVerification = () => {
       toast.error('Debe ingresar una fecha final');
       return;
     }
+
+    console.log({ movementsFilters });
 
     fetchMovements(movementsFilters);
   };
@@ -276,6 +315,13 @@ export const DataVerification = () => {
     return slashAndSpanishMonthDate(dateValue);
   };
 
+  const removeMovementSegmentStartIndex = (segmentCode: string) => {
+    return segmentCode
+      .split(' ')
+      .filter((_, i) => i > 0)
+      .join('');
+  };
+
   const generateMovementsToClipboardText = async () => {
     if (movements) {
       const movementsRows = movements.data.map(m => {
@@ -285,7 +331,17 @@ export const DataVerification = () => {
         const finalCharge =
           charge === null ? '' : !charge ? '' : parseFloat(charge).toLocaleString('en-US');
 
-        const values = [formatedDate, '', number ? number : '', supplier, concept, finalCharge];
+        const finalSegment = ''; // TODO: filtro para saber si quiere gastos generales o aparceria
+
+        const values = [
+          formatedDate,
+          '',
+          number ? number : '',
+          supplier,
+          concept,
+          finalSegment,
+          finalCharge,
+        ];
 
         return values.join('\t');
       });
@@ -419,24 +475,22 @@ export const DataVerification = () => {
               disabled={!selectedCompany || loadingSegments}
               value={`${!selectedSegment ? '' : selectedSegment.segment_id}`}
               onChange={e => {
-                const segment = segments.filter(s => s.segment_id === parseInt(e.target.value))[0];
-                if (!segment) {
-                  setSelectedSegment(null);
-                  const { segment_id, ...rest } = movementsFilters;
-                  setMovementsFilters({
-                    ...rest,
-                  });
-                } else {
-                  setSelectedSegment(segment);
-                  setMovementsFilters({
-                    ...movementsFilters,
-                    segment_id: segment.segment_id,
-                  });
-                }
+                const id = parseInt(e.target.value);
+                const segment = segments.find(s => s.segment_id === id) || null;
+                setSelectedSegment(segment); // ✅ solo actualizas el estado base
               }}
             >
               <option value="">(Segmento sin especificar)</option>
               {segments
+                .map(v => {
+                  return {
+                    ...v,
+                    code: v.code
+                      .split(' ')
+                      .filter((_, i) => i > 0)
+                      .join(''),
+                  };
+                })
                 .sort((a, b) => a.code.localeCompare(b.code))
                 .map(s => (
                   <option key={`segment_${s.segment_id}`} value={String(s.segment_id)}>
@@ -581,6 +635,26 @@ export const DataVerification = () => {
             </select>
           </div>
         </div>
+        <div className="data-verification__type-filter-container">
+          <div className="data-verification__filter data-verification__type-filter">
+            <label htmlFor="type-filter" className="form__label">
+              Tipo <strong>*</strong>
+            </label>
+            <select
+              className="form__select"
+              name="type-filter"
+              id="type-filter"
+              value={typeFilter}
+              onChange={e => {
+                setTypeFilter(e.target.value as 'ALL' | 'APK' | 'GG');
+              }}
+            >
+              <option value="ALL">(Sin especificar)</option>
+              <option value="APK">Aparceria (APK)</option>
+              <option value="GG">Gastos Generales (GG)</option>
+            </select>
+          </div>
+        </div>
         <div className="data-verification__buttons">
           <button className="button" type="submit" disabled={!movementsFiltersAreValid()}>
             Filtrar
@@ -627,11 +701,13 @@ export const DataVerification = () => {
               <thead className="table__head">
                 <tr className="table__row--head">
                   <th className="table__cell table__cell--head">Fecha</th>
+                  <th className="table__cell table__cell--head">Egreso</th>
                   <th className="table__cell table__cell--head">Numero</th>
                   {/* FOLIO */}
                   <th className="table__cell table__cell--head">Proveedor</th>
                   {/* DESCRIPCION */}
                   <th className="table__cell table__cell--head">Concepto</th>
+                  <th className="table__cell table__cell--head">Tipo</th>
                   <th className="table__cell table__cell--head">Cargo</th>
                   {/* IMPORTE */}
                   <th className="table__cell table__cell--head">Acciones</th>
@@ -639,19 +715,23 @@ export const DataVerification = () => {
               </thead>
               <tbody className="table__body">
                 {movements?.data.map(movement => {
-                  const { movement_id, date, number, supplier, concept, charge } = movement;
+                  const { movement_id, date, number, supplier, concept, charge, segment_code } =
+                    movement;
                   const formatedDate = convertMovementDateToFinalValue(date);
+                  const correctSegmentCode = removeMovementSegmentStartIndex(segment_code);
 
                   return (
                     <tr className="table__row" key={movement_id}>
                       <td style={{ textWrap: 'nowrap' }} className="table__cell">
                         {formatedDate}
                       </td>
+                      <td>{''}</td>
                       <td className="table__cell">
                         {!number ? '' : number.toLocaleString('en-US')}
                       </td>
                       <td className="table__cell">{supplier}</td>
                       <td className="table__cell">{concept}</td>
+                      <td className="table__cell">{correctSegmentCode}</td>
                       <td className="table__cell">
                         {charge === null
                           ? ''

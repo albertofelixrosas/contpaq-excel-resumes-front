@@ -3,12 +3,22 @@
   flex-direction: column;
   gap: 16px;
   padding-top: 16px;
+  padding-bottom: 16px;
 }
 
 .data-verification__filter {
   display: flex;
   flex-direction: column;
   gap: 4px;
+}
+
+.data-verification__type-filter-container {
+  display: grid;
+  grid-template-columns: 1fr;
+}
+
+.data-verification__type-filter {
+
 }
 
 .data-verification__dates {
@@ -29,12 +39,27 @@
   .data-verification__dates {
     grid-template-columns: 1fr 1fr;
   }
+
+  .data-verification__type-filter-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+  }
+
+  .data-verification__type-filter {
+    width: 75%;
+  }
 }
 
 @media screen and (min-width: 768px) {
   .data-verification__filters {
     display: grid;
     grid-template-columns: 1fr 1fr;
+  }
+
+  .data-verification__type-filter {
+    width: 50%;
   }
 }
 

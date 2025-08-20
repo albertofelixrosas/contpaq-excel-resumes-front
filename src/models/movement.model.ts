@@ -48,6 +48,7 @@ export interface MovementFilterDto {
   end_date: string;
   concept?: string;
   supplier?: string;
+  segment_type?: 'ALL' | 'APK' | 'GG';
   page: number;
   limit: number;
 }
