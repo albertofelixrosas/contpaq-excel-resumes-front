@@ -116,6 +116,7 @@
   border-radius: 12px;
   cursor: pointer;
   transition: opacity ease-in 0.2s;
+  min-width: 68px;
 }
 
 .table__button--orange:hover,

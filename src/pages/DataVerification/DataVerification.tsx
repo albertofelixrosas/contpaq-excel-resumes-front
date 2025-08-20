@@ -325,13 +325,23 @@ export const DataVerification = () => {
   const generateMovementsToClipboardText = async () => {
     if (movements) {
       const movementsRows = movements.data.map(m => {
-        const { date, number, supplier, concept, charge } = m;
+        const { date, number, supplier, concept, charge, segment_code } = m;
         const formatedDate = convertMovementDateToFinalValue(date);
 
         const finalCharge =
           charge === null ? '' : !charge ? '' : parseFloat(charge).toLocaleString('en-US');
 
-        const finalSegment = ''; // TODO: filtro para saber si quiere gastos generales o aparceria
+        const isGGTypeFilterSelected = typeFilter === 'GG';
+
+        if (isGGTypeFilterSelected) {
+          const values = [formatedDate, '', number ? number : '', supplier, concept, finalCharge];
+          return values.join('\t');
+        }
+
+        const finalSegment = segment_code
+          .split(' ')
+          .filter((_, i) => i > 0)
+          .join('');
 
         const values = [
           formatedDate,
@@ -707,7 +717,7 @@ export const DataVerification = () => {
                   <th className="table__cell table__cell--head">Proveedor</th>
                   {/* DESCRIPCION */}
                   <th className="table__cell table__cell--head">Concepto</th>
-                  <th className="table__cell table__cell--head">Tipo</th>
+                  {typeFilter !== 'GG' && <th className="table__cell table__cell--head">Tipo</th>}
                   <th className="table__cell table__cell--head">Cargo</th>
                   {/* IMPORTE */}
                   <th className="table__cell table__cell--head">Acciones</th>
@@ -731,7 +741,7 @@ export const DataVerification = () => {
                       </td>
                       <td className="table__cell">{supplier}</td>
                       <td className="table__cell">{concept}</td>
-                      <td className="table__cell">{correctSegmentCode}</td>
+                      {typeFilter !== 'GG' && <td className="table__cell">{correctSegmentCode}</td>}
                       <td className="table__cell">
                         {charge === null
                           ? ''
