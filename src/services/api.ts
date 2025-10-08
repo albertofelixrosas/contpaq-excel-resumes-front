@@ -6,6 +6,11 @@ const apiUrl = import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL : 'ht
 export const api = axios.create({
   baseURL: apiUrl,
   timeout: 130000,
+  withCredentials: false,
+  headers: {
+    'Content-Type': 'application/json',
+    Accept: 'application/json',
+  },
 });
 
 export const getResource = <T>(resource: string, params = {}) =>
