@@ -4,6 +4,7 @@ import type {
   CreateMovementDto,
   MovementHeatmapDto,
   MovementFilterDto,
+  MovementReportDto,
   MasiveChangeConceptDto,
   MasiveChangeConceptResponseDto,
   MonthlyReportDto,
@@ -15,6 +16,14 @@ import type {
  */
 export async function fetchMovements(filters: MovementFilterDto): Promise<PaginatedMovementsDto> {
   const { data } = await api.get<PaginatedMovementsDto>('/movements', { params: filters });
+  return data;
+}
+
+/**
+ * Obtiene un movimiento por ID
+ */
+export async function fetchMovement(id: number): Promise<MovementReportDto> {
+  const { data } = await api.get<MovementReportDto>(`/movements/${id}`);
   return data;
 }
 

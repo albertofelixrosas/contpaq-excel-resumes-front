@@ -11,6 +11,11 @@ export async function fetchConcepts(payload: GetConceptsQueryDto): Promise<Conce
   return data;
 }
 
+export async function fetchConcept(id: number): Promise<Concept> {
+  const { data } = await api.get<Concept>(`/concepts/${id}`);
+  return data;
+}
+
 export async function createConcept(payload: CreateConceptDto): Promise<void> {
   await api.post('/concepts', payload);
 }

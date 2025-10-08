@@ -11,6 +11,11 @@ export async function fetchSegments(payload: GetSegmentsQueryDto): Promise<Segme
   return data;
 }
 
+export async function fetchSegment(id: number): Promise<Segment> {
+  const { data } = await api.get<Segment>(`/segments/${id}`);
+  return data;
+}
+
 export async function createSegment(payload: CreateSegmentDto): Promise<void> {
   await api.post('/segments', payload);
 }

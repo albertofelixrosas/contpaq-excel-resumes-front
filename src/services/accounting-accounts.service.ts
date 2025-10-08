@@ -13,6 +13,11 @@ export async function fetchAccounts(
   return data;
 }
 
+export async function fetchAccount(id: number): Promise<AccountingAccount> {
+  const { data } = await api.get<AccountingAccount>(`/accounting-accounts/${id}`);
+  return data;
+}
+
 export async function createAccounts(payload: CreateAccountingAccountDto): Promise<void> {
   await api.post('/accounting-accounts', payload);
 }

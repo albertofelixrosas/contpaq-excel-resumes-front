@@ -6,6 +6,11 @@ export async function fetchCompanies(): Promise<Company[]> {
   return data;
 }
 
+export async function fetchCompany(id: number): Promise<Company> {
+  const { data } = await api.get<Company>(`/companies/${id}`);
+  return data;
+}
+
 export async function createCompany(payload: CreateCompanyDto): Promise<void> {
   await api.post('/companies', payload);
 }
