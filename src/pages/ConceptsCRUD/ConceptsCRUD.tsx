@@ -1,7 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useConcepts } from '../../hooks/useConcepts';
 import './ConceptsCRUD.css';
-import { useCompanies } from '../../hooks/useCompanies';
 import toast from 'react-hot-toast';
 import type { Company } from '../../models/company.model';
 import type { Concept } from '../../models/concept.model';
@@ -11,7 +9,9 @@ import Modal from '../../components/UI/Modal';
 import { CreateConceptCRUD } from '../../components/ModalContents/CRUDConcept/CreateConceptCRUD';
 import { UpdateConceptCRUD } from '../../components/ModalContents/CRUDConcept/UpdateConceptCRUD';
 import { DeleteConceptCRUD } from '../../components/ModalContents/CRUDConcept/DeleteConceptCRUD';
-import { deleteConcept, updateConcept } from '../../services/concept.service';
+// Nuevos hooks de TanStack Query
+import { useConcepts, useCreateConcept, useUpdateConcept, useDeleteConcept } from '../../hooks/concepts';
+import { useCompanies } from '../../hooks/companies';
 
 export const ConceptsCRUD = () => {
   const [selectedCompany, setSelectedCompany] = useState<Company | null>(null);
@@ -20,46 +20,37 @@ export const ConceptsCRUD = () => {
   const [showUpdateConcept, setShowUpdateConcept] = useState(false);
   const [showDeleteConcept, setShowDeleteConcept] = useState(false);
 
-  const {
-    create: createConcept,
-    data: concepts,
-    error: conceptsError,
-    fetch: fetchConcepts,
-    loading: loadingConcepts,
-  } = useConcepts();
+  // Nuevos hooks de TanStack Query
+  const { data: companies, isLoading: loadingCompanies, error: companiesError } = useCompanies();
+  
+  const { 
+    data: concepts, 
+    isLoading: loadingConcepts, 
+    error: conceptsError 
+  } = useConcepts({ 
+    company_id: selectedCompany?.company_id 
+  });
 
-  const {
-    data: companies,
-    fetch: fetchCompanies,
-    error: companiesError,
-    loading: loadingCompanies,
-  } = useCompanies();
+  const { createConcept } = useCreateConcept();
+  const { updateConcept } = useUpdateConcept();
+  const { deleteConcept } = useDeleteConcept();
 
+  // Manejo de errores
   useEffect(() => {
     if (conceptsError) {
-      toast.error(conceptsError);
+      toast.error(conceptsError.message || 'Error al cargar conceptos');
     }
     if (companiesError) {
-      toast.error(companiesError);
+      toast.error(companiesError.message || 'Error al cargar empresas');
     }
   }, [conceptsError, companiesError]);
 
-  useEffect(() => {
-    fetchCompanies();
-  }, []);
-
-  useEffect(() => {
-    if (selectedCompany) {
-      fetchConcepts({ company_id: selectedCompany.company_id });
-    }
-  }, [selectedCompany]);
-
   // Cargar por defecto la primera empresa de la lista
   useEffect(() => {
-    if (companies.length > 0) {
+    if (companies && companies.length > 0 && !selectedCompany) {
       setSelectedCompany(companies[0]);
     }
-  }, [companies]);
+  }, [companies, selectedCompany]);
 
   return (
     <section className="page">
@@ -87,7 +78,7 @@ export const ConceptsCRUD = () => {
                 id="companies-select"
                 value={`${!selectedCompany ? '' : selectedCompany.company_id}`}
                 onChange={e => {
-                  const company = companies.filter(
+                  const company = companies?.filter(
                     c => c.company_id === parseInt(e.target.value),
                   )[0];
                   if (!company) {
@@ -100,7 +91,7 @@ export const ConceptsCRUD = () => {
               >
                 <option value="">(Empresa sin especificar)</option>
                 {companies
-                  .sort((a, b) => a.company_name.localeCompare(b.company_name))
+                  ?.sort((a, b) => a.company_name.localeCompare(b.company_name))
                   .map(c => (
                     <option key={`company_${c.company_id}`} value={String(c.company_id)}>
                       {c.company_name}
@@ -124,7 +115,7 @@ export const ConceptsCRUD = () => {
         </div>
       </div>
 
-      {!loadingConcepts && (concepts.length || 0) > 0 && selectedCompany && (
+      {!loadingConcepts && concepts && concepts.length > 0 && selectedCompany && (
         <>
           <div className="table-container">
             <table className="table table--venues">
@@ -188,11 +179,20 @@ export const ConceptsCRUD = () => {
                 setShowCreateConcept(false);
               }}
               onCreate={async concetName => {
-                await createConcept({ company_id: selectedCompany.company_id, name: concetName });
-                fetchConcepts({ company_id: selectedCompany.company_id });
-                toast.success('¡Se creo el concepto con exito!');
+                createConcept(
+                  { company_id: selectedCompany.company_id, name: concetName },
+                  {
+                    onSuccess: () => {
+                      toast.success('¡Se creó el concepto con éxito!');
+                      setShowCreateConcept(false);
+                    },
+                    onError: (error) => {
+                      toast.error(error.message || 'Error al crear el concepto');
+                    }
+                  }
+                );
               }}
-              currentConcepts={concepts}
+              currentConcepts={concepts || []}
             />
           }
           isOpen={showCreateConcept}
@@ -210,12 +210,23 @@ export const ConceptsCRUD = () => {
               currentValue={selectedConcept.name}
               onClose={() => {}}
               onUpdate={async (id, concept) => {
-                await updateConcept(id, { company_id: selectedCompany.company_id, name: concept });
-                fetchConcepts({ company_id: selectedCompany.company_id });
-                toast.success('¡Se actualizo el concepto con exito!');
-                setShowUpdateConcept(false);
+                updateConcept(
+                  { 
+                    id, 
+                    data: { company_id: selectedCompany.company_id, name: concept }
+                  },
+                  {
+                    onSuccess: () => {
+                      toast.success('¡Se actualizó el concepto con éxito!');
+                      setShowUpdateConcept(false);
+                    },
+                    onError: (error) => {
+                      toast.error(error.message || 'Error al actualizar el concepto');
+                    }
+                  }
+                );
               }}
-              currentConcepts={concepts}
+              currentConcepts={concepts || []}
             />
           }
           isOpen={showUpdateConcept}
@@ -235,12 +246,17 @@ export const ConceptsCRUD = () => {
               conceptId={selectedConcept.concept_id}
               currentValue={selectedConcept.name}
               onDelete={async id => {
-                await deleteConcept(id);
-                fetchConcepts({ company_id: selectedCompany.company_id });
-                toast.success('Se elimino el concepto con exito');
-                setShowDeleteConcept(false);
+                deleteConcept(id, {
+                  onSuccess: () => {
+                    toast.success('Se eliminó el concepto con éxito');
+                    setShowDeleteConcept(false);
+                  },
+                  onError: (error) => {
+                    toast.error(error.message || 'Error al eliminar el concepto');
+                  }
+                });
               }}
-              currentConcepts={concepts}
+              currentConcepts={concepts || []}
             />
           }
           isOpen={showDeleteConcept}
