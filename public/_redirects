@@ -1,0 +1,9 @@
+# Netlify Redirects Configuration
+# Coloca este archivo en la carpeta public/ de tu frontend
+
+# SPA fallback - redirige todas las rutas desconocidas al index.html
+# PERO permite que las peticiones a APIs externas pasen sin redirección
+/*    /index.html   200
+
+# Si estás usando algún proxy para la API (opcional)
+# /api/*  https://contpaq-excel-resumes-api.onrender.com/:splat  200

@@ -1,0 +1,23 @@
+# Netlify Headers Configuration
+# Coloca este archivo en la carpeta public/ de tu frontend
+
+# Headers para todas las páginas
+/*
+  # Permitir CORS desde cualquier origen
+  Access-Control-Allow-Origin: *
+  Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS, PATCH
+  Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With, Accept, Origin
+  
+  # Security headers (pero no muy restrictivos)
+  X-Frame-Options: SAMEORIGIN
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  
+  # NO usar Content-Security-Policy muy restrictivo que bloquee fetch
+  # Content-Security-Policy: default-src 'self' https://contpaq-excel-resumes-api.onrender.com
+
+# Headers específicos para API calls (si tienes un proxy o rewrite)
+/api/*
+  Access-Control-Allow-Origin: *
+  Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS, PATCH
+  Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With
